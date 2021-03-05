@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  mvc:
+    converters:
+      preferred-json-mapper: gson
+
+server.error:
+  include-exception: false
+  include-stacktrace: never # 오류 응답에 stacktrace 내용을 포함할 지 여부
+  path: '/error/badRequest' # 오류 응답을 처리할 Handler의 경로
+  whitelabel.enabled: true # 서버 오류 발생시 브라우저에 보여줄 기본 페이지 생성 여부
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+
+db:
+  driverClassName: org.mariadb.jdbc.Driver
+  jdbcUrl: jdbc:mariadb://mariadb:3306/kreblog?useTimezone=true&amp;serverTimezone=Asia/Seoul&amp;useSSL=false
+  username: kre
+  password: ENC(FIiNzuzdbmFSGKPkYuAZ2/310sfATTKorDBhGAATMclWe9xranIRnRMBzyJKfXNt)
+
+redis:
+  hostName: redis
+  port: 6379
+  password: ENC(zcHHfT7A7W0CVu0Nrb7sDksp+75DUIVzawhXE26qFXNIwIcxw582mPrf9zJDwEE7)
+
+mail:
+  email: ENC(6MDLithNc4rigpUIvN4kLRks5L9Pg3NYoBKSii8SoVXRNazwIN3RH63o3ADxc6UJvWmk+sPCpYOEdjCoQKkyuQ==)
+  password: ENC(OI2j1+ZrpoRdvSRxTQl6h1KM0lb0d5oV1/Jw8LJtXftLPYgWP7nz2r/s1Sfkhqj3)

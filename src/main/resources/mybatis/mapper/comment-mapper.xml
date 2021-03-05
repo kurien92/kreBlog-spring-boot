@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.kurien.blog.module.comment.mapper.CommentMapper">
+	<resultMap id="resultMap" type="net.kurien.blog.module.comment.entity.Comment">
+		<id property="commentNo" column="commentNo"/>
+		<result property="postNo" column="postNo"/>
+		<result property="parentCommentNo" column="parentCommentNo"/>
+		<result property="commentOrder" column="commentOrder"/>
+		<result property="commentDepth" column="commentDepth"/>
+		<result property="accountNo" column="accountNo"/>
+		<result property="author" column="author"/>
+		<result property="password" column="password"/>
+		<result property="comment" column="comment"/>
+		<result property="writeTime" column="writeTime" typeHandler="org.apache.ibatis.type.SqlTimestampTypeHandler"/>
+		<result property="writeIp" column="writeIp"/>
+		<result property="deleteYn" column="deleteYn"/>
+	</resultMap>
+
+	<sql id="table">
+		kreComment
+	</sql>
+
+	<sql id="tablePost">
+		krePost
+	</sql>
+
+	<sql id="tableAccount">
+		kreAccount
+	</sql>
+
+	<sql id="selectQuery">
+		C.commentNo AS commentNo,
+		C.postNo AS postNo,
+		C.parentCommentNo AS parentCommentNo,
+		C.commentOrder AS commentOrder,
+		C.commentDepth AS commentDepth,
+		C.accountNo AS accountNo,
+		COALESCE(C.author, A.accountNickname) AS author,
+		COALESCE(C.password, A.accountPassword) AS password,
+		C.comment AS COMMENT,
+		C.writeTime AS writeTime,
+		C.writeIp as writeIp,
+		C.deleteYn as deleteYn
+	</sql>
+
+	<sql id="manageYn">
+		<!-- mybatis에서 if test='manageYn != "Y"' 작성 시 Y를 작은따옴표로 감싸거나 감싸지 않으면 char 형으로 인식하여 숫자로 검사한다.  -->
+		<!-- 반드시 큰따옴표로 감싸야 스트링 검사를 한다. -->
+		<if test='manageYn != "Y"'>
+			<!-- 공개된 게시물 중 예약발행이 아니거나, 예약발행이고 예약시간이 지난 글만 출력한다. -->
+			<![CDATA[
+       		AND postView = 1
+
+       		AND (
+       			postPublish = 0
+       			OR (
+       				postPublish = 1
+       				AND postReservationTime <= now()
+       			)
+       		)
+       	]]>
+		</if>
+	</sql>
+
+    <select id="selectList" resultMap="resultMap">
+		SELECT
+			<include refid="selectQuery" />
+		FROM <include refid="table" /> C
+		LEFT JOIN <include refid="tableAccount" /> A
+			ON C.accountNo = A.accountNo
+		ORDER BY
+			commentNo DESC
+    </select>
+    
+    <select id="selectListByPostNo" resultMap="resultMap">
+        SELECT
+			<include refid="selectQuery" />
+		FROM <include refid="table" /> C
+		LEFT JOIN <include refid="tableAccount" /> A
+			ON C.accountNo = A.accountNo
+		<where>
+			postNo = #{postNo}
+		</where>
+		ORDER BY
+		parentCommentNo ASC,
+		commentDepth ASC,
+		commentOrder ASC
+    </select>
+    
+    <select id="selectOne" resultMap="resultMap">
+        SELECT
+			<include refid="selectQuery" />
+		FROM <include refid="table" /> C
+		LEFT JOIN <include refid="tableAccount" /> A
+			ON C.accountNo = A.accountNo
+        <where>
+        	commentNo = #{commentNo}
+        </where>
+    </select>
+    
+    <select id="getLastOrder" resultType="Integer">
+        SELECT max(commentOrder)
+        FROM <include refid="table" />
+        <where>
+        	parentCommentNo = #{parentCommentNo}
+        	AND commentDepth = #{commentDepth}
+        	AND deleteYn = 'N'
+        </where>
+    </select>
+		
+		
+    <insert id="insert" useGeneratedKeys="true" keyProperty="commentNo">
+        INSERT INTO
+        <include refid="table" /> (
+        	commentNo,
+			postNo,
+			parentCommentNo,
+			commentOrder,
+			commentDepth,
+            accountNo,
+			author,
+			password,
+			comment,
+			writeTime,
+			writeIp,
+			deleteYn
+        )
+        VALUES (
+        	#{commentNo},
+			#{postNo},
+			#{parentCommentNo},
+			#{commentOrder},
+			#{commentDepth},
+            #{accountNo},
+			#{author},
+			#{password},
+			#{comment},
+			#{writeTime},
+			#{writeIp},
+			#{deleteYn}
+		)
+    </insert>
+    
+    <update id="update">
+        UPDATE <include refid="table" />
+        <set>
+        	<if test="parentCommentNo != null">
+				parentCommentNo = #{parentCommentNo},
+			</if>
+
+			<if test="accountNo != null">
+				accountNo = #{accountNo},
+			</if>
+
+			<if test="author != null">
+				author = #{author},
+			</if>
+			
+        	<if test="password != null">
+				password = #{password},
+			</if>
+			
+			<if test="comment != null">
+				comment = #{comment},
+			</if>
+			
+        	<if test="writeTime != null">
+	       		<choose>
+	       			<when test="writeTime.time == 0">
+	       				writeTime = null,
+	       			</when>
+	       			<otherwise>
+	       				writeTime = #{writeTime},
+	       			</otherwise>
+	       		</choose>
+        	</if>
+			
+			<if test="writeIp != null">
+				writeIp = #{writeIp},
+			</if>
+			
+			<if test="deleteYn != null">
+				deleteYn = #{deleteYn},
+			</if>
+       	</set>
+       	<where>
+       		commentNo = #{commentNo}
+       	</where>
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM <include refid="table" />
+        <where>
+       		commentNo = #{commentNo}
+        </where>
+    </delete>
+
+
+	<select id="search" resultMap="resultMap">
+		SELECT
+			<include refid="selectQuery" />
+		FROM
+			<include refid="table" /> C
+			LEFT JOIN <include refid="tablePost" /> P
+			    ON C.postNo = P.postNo
+			LEFT JOIN <include refid="tableAccount" /> A
+				ON C.accountNo = A.accountNo
+		<where>
+			<foreach collection="searchColumns" item="searchColumn" open="(" close=")" separator=" OR ">
+				<foreach collection="searchQueries" item="searchQuery" open="(" close=")" separator=" AND ">
+					BINARY ${searchColumn} like CONCAT('%', #{searchQuery}, '%')
+				</foreach>
+			</foreach>
+			<include refid="manageYn"/>
+		</where>
+		ORDER BY
+			postNo, commentNo DESC
+	</select>
+</mapper>

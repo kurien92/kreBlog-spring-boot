@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.kurien.blog.module.post.mapper.PostMapper">
+	<resultMap id="resultMap" type="net.kurien.blog.module.post.entity.Post">
+		<id property="postNo" column="postNo" />
+		<result property="categoryNo" column="categoryNo" />
+		<result property="postAuthor" column="postAuthor"/>
+		<result property="postPassword" column="postPassword"/>
+		<result property="postSubject" column="postSubject"/>
+		<result property="postContent" column="postContent"/>
+		<result property="postView" column="postView" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler" />
+		<result property="postPublish" column="postPublish" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler" />
+		<!-- Timestamp로 DB에 추가하는 경우 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")을 사용한다면 입출력 시 date format이 달라서 검증이 어려워진다. -->
+		<!-- 해당 문제는 typeHandler="org.apache.ibatis.type.SqlTimestampTypeHandler"를 설정하여 해결이 가능하다. -->
+		<result property="postWriteTime" column="postWriteTime" typeHandler="org.apache.ibatis.type.SqlTimestampTypeHandler"/>
+		<result property="postReservationTime" column="postReservationTime" typeHandler="org.apache.ibatis.type.SqlTimestampTypeHandler"/>
+		<result property="postWriteIp" column="postWriteIp"/>
+	</resultMap>
+	
+	<sql id="table">
+		krePost
+	</sql>
+	
+	<sql id="manageYn">
+		<!-- mybatis에서 if test='manageYn != "Y"' 작성 시 Y를 작은따옴표로 감싸거나 감싸지 않으면 char 형으로 인식하여 숫자로 검사한다.  -->
+		<!-- 반드시 큰따옴표로 감싸야 스트링 검사를 한다. -->
+       	<if test='manageYn != "Y"'>
+       	<!-- 공개된 게시물 중 예약발행이 아니거나, 예약발행이고 예약시간이 지난 글만 출력한다. -->
+       	<![CDATA[
+       		AND postView = 1
+       		
+       		AND (
+       			postPublish = 0
+       			OR (
+       				postPublish = 1
+       				AND postReservationTime <= now()
+       			)
+       		)
+       	]]>
+       	</if>
+	</sql>
+	
+	<sql id="criteria">
+		<if test="criteria != null">
+			<if test="criteria.offset != null and criteria.rowCount != null">
+				LIMIT #{criteria.offset}, #{criteria.rowCount}
+			</if>
+		</if>
+	</sql>
+
+	<sql id="search">
+		<if test="criteria != null">
+			<if test="criteria.searchType != null and criteria.keyword != null">
+				<choose>
+					<when test="criteria.searchType eq 'category'">
+						categoryId = #{criteria.keyword}
+					</when>
+					<when test="criteria.searchType eq 'subject'">
+						postSubject like CONCAT('%', #{criteria.keyword}, '%')
+					</when>
+					<when test="criteria.searchType eq 'author'">
+						postAuthor like CONCAT('%', #{criteria.keyword}, '%')
+					</when>
+				</choose>
+			</if>
+		</if>
+	</sql>
+    
+    <select id="selectList" resultMap="resultMap">
+        SELECT *
+        FROM <include refid="table" />
+        <where>
+        	<include refid="search" />
+        	
+        	<include refid="manageYn" />
+        </where>
+       	ORDER BY
+			postWriteTime DESC,
+			postNo DESC
+		<include refid="criteria" />
+    </select>
+  
+    <select id="selectListByCategoryIds" parameterType="list" resultMap="resultMap">
+        SELECT *
+        FROM <include refid="table" />
+        <where>
+        	categoryId IN
+			<foreach collection="categoryIds" item="item" index="index" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+        	
+        	<include refid="manageYn" />
+        </where>
+       	ORDER BY
+			postWriteTime DESC,
+			postNo DESC
+		<include refid="criteria" />
+    </select>
+    
+    <select id="selectCount" resultType="Integer">
+        SELECT count(*)
+        FROM <include refid="table" />
+        <where>
+			<include refid="manageYn" />
+        </where>
+    </select>
+    
+    <select id="selectCountByCategoryId" resultType="Integer">
+        SELECT count(*)
+        FROM <include refid="table" />
+        <where>
+        	categoryId = #{categoryId}
+        	<include refid="manageYn" />
+        </where>
+    </select>
+    
+    <select id="selectCountByCategoryIds" resultType="Integer">
+        SELECT count(*)
+        FROM <include refid="table" />
+        <where>
+            categoryId IN
+            <foreach collection="categoryIds" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            
+            <include refid="manageYn" />
+        </where>
+		<include refid="criteria" />
+    </select>
+    
+    
+    <select id="selectOne" resultMap="resultMap">
+        SELECT *
+        FROM <include refid="table" />
+        <where>
+        	postNo = #{postNo}
+        	
+        	<include refid="manageYn" />
+        </where>
+    </select>
+		
+    <insert id="insert" useGeneratedKeys="true" keyProperty="postNo">
+        INSERT INTO
+        <include refid="table" /> (
+        	postNo,
+        	categoryId,
+        	postAuthor,
+        	postPassword,
+        	postSubject,
+        	postContent,
+        	<if test="postView != null">postView,</if>
+        	<if test="postPublish != null">postPublish,</if>
+        	postWriteTime,
+        	postReservationTime,
+        	postWriteIp
+        )
+        VALUES (
+        	#{postNo},
+        	#{categoryId},
+        	#{postAuthor},
+			#{postPassword},
+			#{postSubject},
+			#{postContent},
+        	<if test="postView != null">#{postView.value},</if>
+        	<if test="postPublish != null">#{postPublish.value},</if>
+			#{postWriteTime},
+			#{postReservationTime},
+			#{postWriteIp}
+		)
+    </insert>
+    
+    <update id="update">
+        UPDATE <include refid="table" />
+        <set>
+        	<if test="categoryId != null">
+	        	categoryId = #{categoryId},
+        	</if>
+        	<if test="postPassword != null">
+        		<choose>
+        			<when test="postPassword eq ''">
+        				postPassword = null,
+        			</when>
+        			<otherwise>
+        				postPassword = #{postPassword},
+        			</otherwise>
+        		</choose>
+        	</if>
+        	<if test="postSubject != null">
+	        	postSubject = #{postSubject},
+        	</if>
+        	<if test="postContent != null">
+	        	postContent = #{postContent},
+        	</if>
+        	<if test="postView != null">
+	        	postView = #{postView.value},
+        	</if>
+        	<if test="postPublish != null">
+	        	postPublish = #{postPublish.value},
+        	</if>
+        	<if test="postReservationTime != null">
+	       		<choose>
+	       			<when test="postReservationTime.time == 0">
+	       				postReservationTime = null,
+	       			</when>
+	       			<otherwise>
+	       				postReservationTime = #{postReservationTime},
+	       			</otherwise>
+	       		</choose>
+        	</if>
+        	<if test="postWriteIp != null">
+	        	postWriteIp = #{postWriteIp},
+        	</if>
+       	</set>
+       	
+       	<where>
+       		postNo = #{postNo}
+       	</where>
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM <include refid="table" />
+        <where>
+        	postNo = #{postNo}
+        </where>
+    </delete>
+    
+    <delete id="deleteList" parameterType="list">
+        DELETE FROM <include refid="table" />
+        <where>
+        	postNo IN
+        	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+        		#{item}
+        	</foreach>
+        </where>
+    </delete>
+    
+    <delete id="deleteAll">
+        TRUNCATE <include refid="table" />
+    </delete>
+    
+    <update id="removeCategoryId">
+        UPDATE <include refid="table" />
+        <set>
+        	categoryId = null
+        </set>
+        <where>
+        	categoryId = #{categoryId}
+        </where>
+    </update>
+    
+    <select id="isExist" resultType="Integer">
+        SELECT count(*)
+        FROM <include refid="table" />
+        <where>
+        	postNo = #{postNo}
+        	
+        	<include refid="manageYn" />
+        </where>
+    </select>
+
+	<select id="search" resultMap="resultMap">
+		SELECT *
+		FROM <include refid="table" />
+		<where>
+			<foreach collection="searchColumns" item="searchColumn" open="(" close=")" separator=" OR ">
+				<foreach collection="searchQueries" item="searchQuery" open="(" close=")" separator=" AND ">
+					${searchColumn} like CONCAT('%', #{searchQuery}, '%')
+				</foreach>
+			</foreach>
+			<include refid="manageYn" />
+		</where>
+		ORDER BY
+			postWriteTime DESC,
+			postNo DESC
+	</select>
+</mapper>

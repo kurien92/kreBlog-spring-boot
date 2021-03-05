@@ -1,0 +1,47 @@
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+	.kre_scrollbar {
+	    overflow: hidden;
+	    position: relative;
+	}
+
+	.scrollBarContainer.animate .scroll{
+	    transition: 2s opacity ease;
+	    -ms-transition: 2s opacity ease;
+	    opacity: 0;
+	}
+	.scrollBarContainer:hover .scroll{
+	    opacity: 0.5;
+	    transition: none;
+	    -ms-transition: none;
+	}
+	
+	#kre_wrap .scrollBarContainer {
+		width: 6px;	
+	}
+	
+	#kre_aside .scroll {
+		background-color: #ffb;
+		right: 2px;
+	}
+	
+	#kre_main .scroll {
+		background-color: #033e6a;
+		right: 2px;
+	}
+	
+	#kre_main .scroll-wrapper2 {
+	    position: absolute;
+		left: 0px;
+	    right: 0px;
+	    top: 0px;
+	    bottom: 0px;
+		padding-left: 300px;
+	}
+}
+
+@media (min-width: 1200px) {
+	#kre_main .scroll-wrapper2 {
+		padding-left: 396px;
+	}
+}

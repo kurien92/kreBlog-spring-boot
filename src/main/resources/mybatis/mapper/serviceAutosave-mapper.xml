@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.kurien.blog.module.autosave.mapper.ServiceAutosaveMapper">
+	<resultMap id="resultMap" type="net.kurien.blog.module.autosave.entity.ServiceAutosave">
+		<id property="serviceName" column="serviceName" />
+		<result property="asNo" column="asNo"/>
+		<result property="serviceAsUsername" column="serviceAsUsername"/>
+		<result property="serviceAsWriteTime" column="serviceAsWriteTime" typeHandler="org.apache.ibatis.type.SqlTimestampTypeHandler"/>
+		<result property="serviceAsWriteIp" column="serviceAsWriteIp" />
+		<result property="serviceAsExpireTime" column="serviceAsExpireTime" typeHandler="org.apache.ibatis.type.SqlTimestampTypeHandler"/>
+	</resultMap>
+	
+	<sql id="table">
+		kreServiceAutosave
+	</sql>
+
+	<insert id="insert">
+		INSERT INTO
+		<include refid="table" /> (
+			serviceName,
+			asNo,
+			serviceAsUsername,
+			serviceAsWriteTime,
+			serviceAsWriteIp,
+			serviceAsExpireTime
+		)
+		VALUES (
+			#{serviceName},
+			#{asNo},
+			#{serviceAsUsername},
+			#{serviceAsWriteTime},
+			#{serviceAsWriteIp},
+			#{serviceAsExpireTime}
+		)
+	</insert>
+
+	<select id="selectByServiceNameAndAsUsername" resultMap="resultMap">
+		SELECT *
+		FROM <include refid="table" />
+		<where>
+			serviceName = #{serviceName}
+			AND serviceAsUsername = #{serviceAsUsername}
+			AND serviceAsExpireTime > now()
+		</where>
+		ORDER BY
+		asNo ASC
+	</select>
+
+	<select id="selectByAsNo" resultMap="resultMap">
+		SELECT *
+		FROM <include refid="table" />
+		<where>
+			serviceName = #{serviceName}
+			AND asNo = #{asNo}
+		</where>
+		ORDER BY
+		asNo ASC
+	</select>
+
+	<delete id="deleteByServiceNameAndAsUsername">
+		DELETE FROM <include refid="table" />
+		<where>
+			serviceName = #{serviceName}
+			AND serviceAsUsername = #{serviceAsUsername}
+		</where>
+	</delete>
+
+	<delete id="deleteByAsNo">
+		DELETE FROM <include refid="table" />
+		<where>
+			asNo = #{asNo}
+		</where>
+	</delete>
+
+	<select id="selectCount" resultType="Integer">
+		SELECT count(*)
+		FROM <include refid="table" />
+		<where>
+			<if test="asNo != null">
+				asNo = #{asNo}
+			</if>
+		</where>
+	</select>
+    
+    <delete id="deleteAll">
+        TRUNCATE <include refid="table" />
+    </delete>
+</mapper>

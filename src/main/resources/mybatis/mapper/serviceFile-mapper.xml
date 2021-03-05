@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.kurien.blog.module.file.mapper.ServiceFileMapper">
+	<resultMap id="resultMap" type="net.kurien.blog.module.file.entity.ServiceFile">
+		<id property="serviceName" column="serviceName" />
+		<result property="serviceNo" column="serviceNo" />
+		<result property="fileNo" column="fileNo"/>
+		<result property="serviceFileWriteTime" column="serviceFileWriteTime" typeHandler="org.apache.ibatis.type.SqlTimestampTypeHandler"/>
+		<result property="serviceFileWriteIp" column="serviceFileWriteIp" />
+	</resultMap>
+	
+	<sql id="table">
+		kreServiceFile
+	</sql>
+
+	<select id="selectOne" resultMap="resultMap">
+        SELECT *
+        FROM <include refid="table" />
+        <where>
+			<if test="serviceName != null and serviceNo != null">
+				AND serviceName = #{serviceName}
+				AND serviceNo = #{serviceNo}
+			</if>
+
+			AND fileNo = #{fileNo}
+        </where>
+       	ORDER BY
+       		fileNo ASC
+	</select>
+
+    <select id="selectList" resultMap="resultMap">
+        SELECT *
+        FROM <include refid="table" />
+        <where>
+			serviceName = #{serviceName}
+			AND serviceNo = #{serviceNo}
+        </where>
+       	ORDER BY
+       		fileNo ASC
+    </select>
+
+	<select id="selectCount" resultType="Integer">
+		SELECT count(*)
+		FROM <include refid="table" />
+		<where>
+			<choose>
+				<when test="serviceName != null and serviceNo != null">
+					AND serviceName = #{serviceName}
+					AND serviceNo = #{serviceNo}
+				</when>
+				<otherwise>
+					AND fileNo = #{fileNo}
+				</otherwise>
+			</choose>
+		</where>
+		ORDER BY
+			fileNo ASC
+	</select>
+
+	<insert id="insert">
+        INSERT INTO
+        <include refid="table" /> (
+        	serviceName,
+        	serviceNo,
+        	fileNo,
+        	serviceFileWriteTime,
+        	serviceFileWriteIp
+        )
+        VALUES (
+        	#{serviceName},
+        	#{serviceNo},
+        	#{fileNo},
+			#{serviceFileWriteTime},
+			#{serviceFileWriteIp}
+		)
+    </insert>
+    
+    <insert id="insertFiles" useGeneratedKeys="true" keyProperty="fileNo">
+        INSERT INTO
+        <include refid="table" /> (
+        	serviceName,
+        	serviceNo,
+        	fileNo,
+        	serviceFileWriteTime,
+        	serviceFileWriteIp
+        )
+        VALUES 
+       	<foreach collection="list" item="serviceFile" index="index" separator=",">
+       		(
+	        	#{serviceFile.serviceName},
+	        	#{serviceFile.serviceNo},
+	        	#{serviceFile.fileNo},
+				#{serviceFile.serviceFileWriteTime},
+				#{serviceFile.serviceFileWriteIp}
+			)
+       	</foreach>
+    </insert>
+    
+    <delete id="delete">
+        DELETE FROM <include refid="table" />
+        <where>
+			<if test="serviceName != null and serviceNo != null">
+				AND serviceName = #{serviceName}
+				AND serviceNo = #{serviceNo}
+			</if>
+
+			AND fileNo = #{fileNo}
+		</where>
+    </delete>
+
+    <delete id="deleteList">
+        DELETE FROM <include refid="table" />
+        <where>
+			<choose>
+				<when test="serviceName != null and serviceNo != null">
+					AND serviceName = #{serviceName}
+					AND serviceNo = #{serviceNo}
+				</when>
+				<when test="fileNos != null">
+					AND fileNo IN
+					<foreach collection="fileNos" item="fileNo" index="index" open="(" close=")" separator=",">
+						#{fileNo}
+					</foreach>
+				</when>
+				<otherwise>
+					<if test="serviceName != null">
+						AND serviceName = #{serviceName}
+					</if>
+				</otherwise>
+			</choose>
+        </where>
+    </delete>
+
+    <delete id="deleteAll">
+        TRUNCATE <include refid="table" />
+    </delete>
+</mapper>

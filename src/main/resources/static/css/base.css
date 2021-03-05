@@ -1,0 +1,344 @@
+@charset "UTF-8";
+
+* {
+	outline-color: #f90;
+}
+
+body {
+	font-family: 'Nanum Gothic', sans-serif;
+	font-size: 18px;
+}
+
+::selection {
+	background-color: #036e9a;
+	color: #fff;
+}
+
+a {
+	color: #033e6a;
+	text-decoration: none;
+}
+
+a:hover,
+a:active,
+a:focus {
+	color: #f80;
+}
+
+/* IOS에서는 기본 스타일이 지정되어 레이아웃이 틀어지므로 초기화 해야한다. */
+input, textarea, button {
+	-webkit-appearance: none;
+	-webkit-border-radius: 0;
+}
+
+select {
+	-webkit-border-radius: 0;
+}
+
+/* checkbox는 appearance가 none인 경우 체크박스가 사라진다. */
+input[type="checkbox"] {
+	-webkit-appearance: checkbox;
+}
+
+ins {
+	vertical-align: middle;
+}
+
+.material-icons {
+	vertical-align: middle;
+
+	/* Support for all WebKit browsers. */
+	-webkit-font-smoothing: antialiased;
+	/* Support for Safari and Chrome. */
+	text-rendering: optimizeLegibility;
+
+	/* Support for Firefox. */
+	-moz-osx-font-smoothing: grayscale;
+
+	/* Support for IE. */
+	font-feature-settings: 'liga';
+}
+
+.hidden {
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+	overflow: hidden;
+	width: 1px;
+	height: 1px;
+	text-indent: -9999px;
+}
+
+.nowrap {
+	white-space: nowrap;
+}
+
+.kre_btn_list:after,
+ul.kre_btn_list_left:after,
+ul.kre_btn_list_right:after {
+	content: " ";
+	display: block;
+	clear: both;
+}
+
+ul.kre_btn_list_left {
+	list-style: none;
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+ul.kre_btn_list_right {
+	list-style: none;
+	float: right;
+	margin: 0;
+	padding: 0;
+}
+
+ul.kre_btn_list_left > li,
+ul.kre_btn_list_right > li {
+	float: left;
+	margin-left: 8px;
+}
+
+ul.kre_btn_list_left > li:first-child,
+ul.kre_btn_list_right > li:first-child {
+	margin-left: 0;
+}
+
+.kre_btn {
+    display: inline-block;
+    padding: 4px 8px;
+    border: 1px solid #033e6a;
+    background-color: #fff;
+    line-height: 1.3em;
+    font-size: 18px;
+    color: #033e6a;
+	transition: background-color .3s, color .3s;
+	cursor: pointer;
+}
+
+.kre_btn.reverse_btn {
+    background-color: #033e6a;
+    color: #fff;
+}
+
+.kre_btn[disabled],
+.kre_btn[disabled]:hover {
+	border-color: #999 !important;
+	background-color: #999 !important;
+	color: #333 !important;
+}
+
+.kre_btn.btn_small {
+	vertical-align: middle;
+	font-size: 16px;
+}
+
+.kre_btn.link_btn {
+	display: inline;
+	padding: 0;
+	border: none;
+	background-color: transparent;
+	color: #033e6a;
+}
+
+.kre_inp {
+	width: 160px;
+	height: 30px;
+	padding: 6px;
+	border: 1px solid #033e6a;
+	box-sizing: border-box;
+	vertical-align: middle;
+	font-size: 14px;
+}
+
+.kre_inp[readonly] {
+	background-color: #ddd;
+}
+
+.kre_inp[disabled],
+.kre_inp[disabled]:hover {
+	border-color: #999 !important;
+	background-color: #999 !important;
+	color: #333 !important;
+}
+
+.kre_text {
+	width: 100%;
+	height: 130px;
+	padding: 6px;
+	border: 1px solid #033e6a;
+	box-sizing: border-box;
+	font-size: 14px;
+}
+
+.kre_row {
+	margin-top: 6px;
+}
+
+.kre_row:first-child {
+	margin-top: 0;
+}
+
+.kre_row_alert {
+	display: none;
+	color: #f66;
+	font-weight: bold;
+}
+
+.kre_box_left {
+	float: left;
+}
+
+.kre_box_right {
+	float: right;
+}
+
+.kre_table_responsive {
+	width: 100%;
+	overflow-x: auto;
+}
+
+.kre_table {
+	width: 100%;
+	border: 1px solid #033e6a;
+    border-collapse: collapse;
+}
+
+.kre_table tbody tr:hover {
+	background-color: #ffd;
+}
+
+.kre_table th {
+	padding: 8px;
+	border: 1px solid #033e6a;
+	background-color: #033e6a;
+	color: #fff;
+}
+
+.kre_table td {
+	padding: 6px;
+	border: 1px solid #033e6a;
+	font-size: 16px;
+}
+
+.pagination {
+	margin-top: 20px;
+}
+
+.pagination_item {
+	display: inline-block;
+	padding: 4px 8px;
+	border: 1px solid #033e6a;
+	background-color: #033e6a;
+	font-weight: bold;
+}
+
+a.pagination_item {
+	color: #fff;
+}
+
+.pagination_item:hover {
+	display: inline-block;
+	padding: 4px 8px;
+	border: 1px solid #033e6a;
+	background-color: #fff;
+	transition: background 0.4s, color 0.4s;
+}
+
+a.pagination_item:hover {
+	color: #033e6a;
+}
+
+.pagination_current {
+	border: 1px solid #033e6a;
+	background-color: #fff;
+	color: #033e6a;
+}
+
+.content_box {
+    border: 1px solid #033e6a;
+    box-sizing: border-box;
+    padding: 20px;
+    text-align: center;
+}
+
+.content_header {
+	margin: 0;
+	color: #033e6a;
+	font-size: 24px;
+}
+
+.content_box .kre_btn {
+	width: 100%;
+	margin-top: 20px;
+	padding: 10px 20px;
+	box-sizing: border-box;
+}
+
+.content_box .kre_btn:first-child {
+	margin-top: 0;
+}
+
+.content_description {
+	text-align: left;
+    margin-top: 20px;
+    font-weight: bold;
+    line-height: 1.6em;
+}
+
+.content_button_wrap {
+	margin-top: 30px;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+	.content_box {
+		width: 546px;
+    	padding: 50px;
+	}
+
+	.content_header {
+		font-size: 32px;
+	}
+
+	.content_box .kre_btn {
+		width: auto;
+		margin-top: 0;
+		margin-left: 20px;
+	}
+
+	.content_box .kre_btn:first-child {
+		margin-left: 0;
+	}
+
+	.content_button_wrap {
+		margin-top: 40px;
+	}
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+	.kre_btn:active,
+	.kre_btn:focus,
+	.kre_btn:hover {
+		background-color: #033e6a;
+		color: #fff;
+	}
+
+	.kre_btn.reverse_btn:active,
+	.kre_btn.reverse_btn:focus,
+	.kre_btn.reverse_btn:hover {
+		background-color: #fff;
+		color: #033e6a;
+	}
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+}
