@@ -5,6 +5,12 @@ spring:
   mvc:
     converters:
       preferred-json-mapper: gson
+  jpa:
+    open-in-view: false
+    hibernate:
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
 
 server.error:
   include-exception: false
@@ -15,6 +21,15 @@ server.error:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
+    key-obtention-iterations: 2000000
+
+---
+# PRODUCTION
+
+spring:
+  config:
+    activate:
+      on-profile: prod
 
 db:
   driverClassName: org.mariadb.jdbc.Driver
@@ -30,3 +45,58 @@ redis:
 mail:
   email: ENC(6MDLithNc4rigpUIvN4kLRks5L9Pg3NYoBKSii8SoVXRNazwIN3RH63o3ADxc6UJvWmk+sPCpYOEdjCoQKkyuQ==)
   password: ENC(OI2j1+ZrpoRdvSRxTQl6h1KM0lb0d5oV1/Jw8LJtXftLPYgWP7nz2r/s1Sfkhqj3)
+
+---
+# DEVELOPMENT
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+db:
+  driverClassName: org.mariadb.jdbc.Driver
+  jdbcUrl: jdbc:mariadb://mariadb:3306/kreblog?useTimezone=true&amp;serverTimezone=Asia/Seoul&amp;useSSL=false
+  username: kre
+  password: ENC(FIiNzuzdbmFSGKPkYuAZ2/310sfATTKorDBhGAATMclWe9xranIRnRMBzyJKfXNt)
+
+redis:
+  hostName: redis
+  port: 6379
+  password: ENC(zcHHfT7A7W0CVu0Nrb7sDksp+75DUIVzawhXE26qFXNIwIcxw582mPrf9zJDwEE7)
+
+mail:
+  email: ENC(6MDLithNc4rigpUIvN4kLRks5L9Pg3NYoBKSii8SoVXRNazwIN3RH63o3ADxc6UJvWmk+sPCpYOEdjCoQKkyuQ==)
+  password: ENC(OI2j1+ZrpoRdvSRxTQl6h1KM0lb0d5oV1/Jw8LJtXftLPYgWP7nz2r/s1Sfkhqj3)
+---
+# LOCAL
+
+spring:
+  config:
+    activate:
+      on-profile: local
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+
+jasypt:
+  encryptor:
+    key-obtention-iterations: 10000
+
+db:
+  driverClassName: org.mariadb.jdbc.Driver
+  jdbcUrl: jdbc:mariadb://mariadb:3306/kreblog?useTimezone=true&amp;serverTimezone=Asia/Seoul&amp;useSSL=false
+  username: kre
+  password: ENC(R/KTOQK/XFrhZPiVxnTSMkBTjJEqxMSOlS7fs7BsRAIch2UySwwCcXvNcdbyEPfz)
+
+redis:
+  hostName: redis
+  port: 6379
+  password: ENC(T2zuuQ08Q71Z35SsDUeMrdjxaDOt+v34HkA9hPWc5DkluRu+x58/zDT9oTMfU+oU)
+
+
+mail:
+  email: ENC(NrrunQjzP424jN09KgtDWjsV2SeJpoBIwKq2LIXIjzxI6GfzMyZJWdKvqccGFcQM+wN4pPP8UWDxyHp4/kSYbg==)
+  password: ENC(ewHfj35KjQKU8auSGoT6eLOUn3aI+WmftVTNRQuwHX/RlZ5/fHU/QgzG06nShH6g)

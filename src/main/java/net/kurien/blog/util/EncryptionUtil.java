@@ -24,7 +24,7 @@ public class EncryptionUtil {
 
         String kreAesKey = System.getenv("KRE_AES_KEY");
         String kreAesIv = System.getenv("KRE_AES_IV");
-        String kreSalt = System.getenv("KRE_SALT");
+        kreSalt = System.getenv("KRE_SALT");
 
         aesSecretKey = new SecretKeySpec(kreAesKey.getBytes(), "AES");
         aesIv = new IvParameterSpec(kreAesIv.getBytes(StandardCharsets.UTF_8));

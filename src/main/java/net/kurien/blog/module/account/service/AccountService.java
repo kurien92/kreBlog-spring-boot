@@ -1,25 +1,26 @@
 package net.kurien.blog.module.account.service;
 
+import net.kurien.blog.domain.Account;
 import net.kurien.blog.domain.SearchCriteria;
 import net.kurien.blog.exception.InvalidRequestException;
-import net.kurien.blog.module.account.entity.Account;
 
 import javax.mail.MessagingException;
 import java.util.List;
 
 public interface AccountService {
-    Account get(String accountId);
-    Account get(Integer accountNo);
-    Account getByEmail(String accountEmail);
+    Account getUser(String email);
+    Account getUser(Long id);
 
-    List<Account> getList(SearchCriteria criteria);
-    void signUp(Account account) throws InvalidRequestException;
+    net.kurien.blog.module.account.entity.Account getByEmail(String accountEmail);
+
+    List<net.kurien.blog.module.account.entity.Account> getList(SearchCriteria criteria);
+    void signUp(net.kurien.blog.module.account.entity.Account account) throws InvalidRequestException;
     void sendCertKey(String accountEmail, String certKey) throws MessagingException;
-    void add(Account account);
-    void update(Account account);
+    void add(net.kurien.blog.module.account.entity.Account account);
+    void update(net.kurien.blog.module.account.entity.Account account);
     void delete(String accountId);
     void delete(Integer accountNo);
-    void passwordChange(Account account) throws InvalidRequestException;
+    void passwordChange(net.kurien.blog.module.account.entity.Account account) throws InvalidRequestException;
 
     void checkId(String accountId) throws InvalidRequestException;
     void checkPassword(String accountPassword) throws InvalidRequestException;

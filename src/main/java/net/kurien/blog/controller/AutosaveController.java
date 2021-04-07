@@ -3,7 +3,7 @@ package net.kurien.blog.controller;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.kurien.blog.common.security.CurrentUser;
-import net.kurien.blog.common.security.User;
+import net.kurien.blog.common.security.domain.User;
 import net.kurien.blog.module.autosave.entity.Autosave;
 import net.kurien.blog.module.autosave.entity.ServiceAutosave;
 import net.kurien.blog.module.autosave.service.AutosaveService;
@@ -45,7 +45,7 @@ public class AutosaveController {
         ServiceAutosave serviceAutosave = new ServiceAutosave();
         serviceAutosave.setServiceName(serviceName);
         serviceAutosave.setAsNo(autosave.getAsNo());
-        serviceAutosave.setServiceAsUsername(user.getId());
+        serviceAutosave.setServiceAsUsername(user.getUsername());
         serviceAutosave.setServiceAsWriteIp(RequestUtil.getRemoteAddr(request));
         serviceAutosave.setServiceAsExpireTime(TimeUtil.addTime(60 * 60 * 24 * 30));
 
@@ -71,7 +71,7 @@ public class AutosaveController {
     @RequestMapping("/list/{serviceName}")
     public JsonObject list(@PathVariable String serviceName,
                            @CurrentUser User user) {
-        List<ServiceAutosave> serviceAutosaves = serviceAutosaveService.getList(serviceName, user.getId());
+        List<ServiceAutosave> serviceAutosaves = serviceAutosaveService.getList(serviceName, user.getUsername());
 
         JsonObject json = new JsonObject();
         JsonArray autosaveJsonArray = new JsonArray();
@@ -135,7 +135,7 @@ public class AutosaveController {
             return json;
         }
 
-        if(serviceAutosave.getServiceAsUsername().equals(user.getId()) == false) {
+        if(serviceAutosave.getServiceAsUsername().equals(user.getUsername()) == false) {
             json.addProperty("result", "fail");
             json.add("value", new JsonObject());
             json.addProperty("message", "삭제 권한이 없는 자료입니다.");

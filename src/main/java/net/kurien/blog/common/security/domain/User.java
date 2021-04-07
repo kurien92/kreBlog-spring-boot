@@ -1,4 +1,4 @@
-package net.kurien.blog.common.security;
+package net.kurien.blog.common.security.domain;
 
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,34 +7,30 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 public class User implements UserDetails, CredentialsContainer {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
-    private Integer no;
-    private String id;
+    private Long id;
+    private String email;
     private String password;
     private String nickname;
     private boolean block;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public User(Integer no, String id, String password, String nickname, boolean block, Collection<? extends GrantedAuthority> authorities) {
-        this.no = no;
+    public User(Long id, String email, String password, String nickname, boolean block, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
+        this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.block = block;
         this.authorities = authorities;
     }
 
-    public Integer getNo() {
-        return this.no;
+    public Long getId() {
+        return this.id;
     }
 
     public String getUsername() {
-        return this.id;
-    }
-
-    public String getId() {
-        return this.id;
+        return this.email;
     }
 
     public String getPassword() {

@@ -1,54 +1,56 @@
 package net.kurien.blog.module.account.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import net.kurien.blog.common.type.TrueFalseType;
+import net.kurien.blog.domain.Account;
 import net.kurien.blog.domain.SearchCriteria;
 import net.kurien.blog.exception.InvalidRequestException;
 import net.kurien.blog.module.account.dao.AccountDao;
-import net.kurien.blog.module.account.entity.Account;
+import net.kurien.blog.module.account.repository.AccountRepository;
 import net.kurien.blog.module.account.service.AccountService;
 import net.kurien.blog.module.mail.service.MailService;
 import net.kurien.blog.util.EncryptionUtil;
 import net.kurien.blog.util.TimeUtil;
 import net.kurien.blog.util.ValidationUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BasicAccountService implements AccountService {
     private final AccountDao accountDao;
-
+    private final AccountRepository accountRepository;
     private final MailService mailService;
 
-    @Autowired
-    public BasicAccountService(AccountDao accountDao, MailService mailService) {
-        this.accountDao = accountDao;
-        this.mailService = mailService;
+    @Transactional(readOnly = true)
+    public Account getUser(Long id) {
+        return accountRepository.findById(id).get();
+    }
+
+    @Transactional(readOnly = true)
+    public Account getUser(String email) {
+        return accountRepository.findByEmail(email);
     }
 
     @Override
-    public Account get(String accountId) {
-        return accountDao.select(accountId);
+    public net.kurien.blog.module.account.entity.Account getByEmail(String accountEmail) {
+        return null;
     }
 
     @Override
-    public Account get(Integer accountNo) {
-        return accountDao.select(accountNo);
+    public List<net.kurien.blog.module.account.entity.Account> getList(SearchCriteria criteria) {
+        return null;
     }
 
-    public Account getByEmail(String accountEmail) {
-        return accountDao.selectByEmail(accountEmail);
-    }
-
-    @Override
-    public List<Account> getList(SearchCriteria criteria) {
+    public List<net.kurien.blog.module.account.entity.Account> getUsers(SearchCriteria criteria) {
         return accountDao.selectList(criteria);
     }
 
     @Override
-    public void signUp(Account account) throws InvalidRequestException {
+    public void signUp(net.kurien.blog.module.account.entity.Account account) throws InvalidRequestException {
         checkId(account.getAccountId());
         checkPassword(account.getAccountPassword());
         checkEmail(account.getAccountEmail());
@@ -67,12 +69,12 @@ public class BasicAccountService implements AccountService {
     }
 
     @Override
-    public void add(Account account) {
+    public void add(net.kurien.blog.module.account.entity.Account account) {
         accountDao.insert(account);
     }
 
     @Override
-    public void update(Account account) {
+    public void update(net.kurien.blog.module.account.entity.Account account) {
         accountDao.update(account);
     }
 
@@ -86,8 +88,8 @@ public class BasicAccountService implements AccountService {
         accountDao.delete(accountNo);
     }
 
-    public void passwordChange(Account account) throws InvalidRequestException {
-        Account selectedAccount = accountDao.selectByEmail(account.getAccountEmail());
+    public void passwordChange(net.kurien.blog.module.account.entity.Account account) throws InvalidRequestException {
+        net.kurien.blog.module.account.entity.Account selectedAccount = accountDao.selectByEmail(account.getAccountEmail());
 
         if(EncryptionUtil.checkPassword(account.getAccountPassword(), selectedAccount.getAccountPassword()) == true) {
             throw new InvalidRequestException("이미 사용중인 비밀번호입니다. 다른 비밀번호를 입력해주세요.");

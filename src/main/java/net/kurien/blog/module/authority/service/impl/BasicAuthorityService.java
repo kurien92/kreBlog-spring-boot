@@ -2,7 +2,7 @@ package net.kurien.blog.module.authority.service.impl;
 
 import net.kurien.blog.module.authority.dao.AuthorityDao;
 import net.kurien.blog.module.authority.dao.GroupAuthorityDao;
-import net.kurien.blog.module.authority.entity.Authority;
+import net.kurien.blog.domain.Authority;
 import net.kurien.blog.module.authority.entity.GroupAuthority;
 import net.kurien.blog.module.authority.service.AuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;

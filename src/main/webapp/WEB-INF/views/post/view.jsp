@@ -96,7 +96,7 @@
 <script>
 	var comment = kreComment({
 		postNo: $(".kre_article").data("key"),
-		userNo: "${user.no}",
+		userNo: "${user.id}",
 		ui: {
 			commentView: "#comment_view",
 			writeBtn: "#comment_write_btn",

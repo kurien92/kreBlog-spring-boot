@@ -10,7 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.kurien.blog.common.security.CurrentUser;
-import net.kurien.blog.common.security.User;
+import net.kurien.blog.common.security.domain.User;
 import net.kurien.blog.exception.InvalidRequestException;
 import net.kurien.blog.module.comment.dto.CommentDto;
 import net.kurien.blog.module.comment.entity.Comment;
@@ -94,7 +94,7 @@ public class CommentController {
 			comment.setAuthor(HtmlUtil.escapeHtml(commentDto.getName()));
 			comment.setPassword(commentDto.getPassword());
 		} else {
-			comment.setAccountNo(user.getNo());
+			comment.setAccountNo(Long.valueOf(user.getId()).intValue());
 		}
 
 		comment.setComment(HtmlUtil.escapeHtml(commentDto.getText()));
@@ -139,7 +139,7 @@ public class CommentController {
 			comment.setAuthor(HtmlUtil.escapeHtml(commentDto.getName()));
 			comment.setPassword(commentDto.getPassword());
 		} else {
-			comment.setAccountNo(user.getNo());
+			comment.setAccountNo(Long.valueOf(user.getId()).intValue());
 		}
 
 		comment.setComment(HtmlUtil.escapeHtml(commentDto.getText()));
@@ -203,7 +203,7 @@ public class CommentController {
 			comment.setAuthor(HtmlUtil.escapeHtml(commentDto.getName()));
 			comment.setPassword(commentDto.getPassword());
 		} else {
-			comment.setAccountNo(user.getNo());
+			comment.setAccountNo(Long.valueOf(user.getId()).intValue());
 		}
 
 		comment.setComment(HtmlUtil.escapeHtml(commentDto.getText()));
@@ -258,7 +258,7 @@ public class CommentController {
 			failMsg = "댓글을 수정/삭제할 권한이 없습니다.";
 
 			try {
-				checkedUser = commentService.checkUser(no, user.getNo());
+				checkedUser = commentService.checkUser(no, Long.valueOf(user.getId()).intValue());
 			} catch(NullPointerException e) {
 				failMsg = e.getMessage();
 			}
