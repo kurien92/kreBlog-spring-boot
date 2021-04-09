@@ -20,6 +20,7 @@ public class Role {
     @OneToMany(mappedBy = "role")
     private Set<RoleAuthority> roleAuthorities = new HashSet<>();
 
+    @Column(length = 20)
     private String roleName;
 
 

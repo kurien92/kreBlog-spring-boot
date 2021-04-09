@@ -2,6 +2,7 @@ package net.kurien.blog.domain;
 
 import lombok.*;
 import net.kurien.blog.common.type.TrueFalseType;
+import net.kurien.blog.util.EncryptionUtil;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -39,6 +40,18 @@ public class Account {
 
     @Column(length = 15)
     private String signupIp;
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void changeBlock(TrueFalseType block) {
+        this.block = block;
+    }
 
     @Builder
     public Account(Set<AccountAuthority> accountAuthorities, Set<AccountRole> accountRoles, String email, String password, String nickname, TrueFalseType block, LocalDateTime signupTime, String signupIp) {

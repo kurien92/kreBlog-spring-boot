@@ -21,15 +21,11 @@
                 </div>
 
                 <div id="inputCertKey" class="kre_row">
-                    <label for="certKey" class="row_column"></label><input type="text" id="certKey" name="certKey" class="kre_inp" placeholder="Enter a certification key">
+                    <input type="text" id="certKey" name="certKey" class="kre_inp" placeholder="Enter a certification key">
                 </div>
 
                 <div id="checkCert" class="kre_row">
-                    <label for="checkCertBtn" class="row_column"></label><button type="button" id="checkCertBtn" name="checkCertBtn" class="kre_inp kre_btn reverse_btn">Check</button>
-                </div>
-
-                <div id="inputId" class="kre_row">
-                    <label for="accountId" class="row_column">ID</label><input type="text" id="accountId" name="accountId" class="kre_inp" placeholder="ID" readonly>
+                    <button type="button" id="checkCertBtn" name="checkCertBtn" class="kre_btn reverse_btn">Check</button>
                 </div>
 
                 <div id="inputPassword" class="kre_row">
@@ -110,7 +106,7 @@
 
         $("#checkCertBtn").on("click", function() {
             var data = {
-                "accountEmail": $("#accountEmail").val(),
+                "email": $("#accountEmail").val(),
                 "certKey": $("#certKey").val()
             };
 
@@ -122,8 +118,6 @@
 
                 alert("인증되었습니다. 변경할 비밀번호를 입력하세요.");
 
-                $("#accountId").val(result.id);
-                $("#inputId").show(0);
                 $("#inputPassword").show(0);
                 $("#viewPasswordBtn").show(0);
             }).catch(function(err) {
@@ -139,8 +133,8 @@
         $("#changePasswordBtn").on("click", function() {
             var data = {
                 "token": $("#token").val(),
-                "accountPassword": $("#accountPassword").val(),
-                "accountEmail": $("#accountEmail").val()
+                "email": $("#accountEmail").val(),
+                "password": $("#accountPassword").val(),
             }
 
             ajax("post", contextPath + "/account/findCheck", data).then(function() {

@@ -13,6 +13,7 @@ public class Authority {
     @Column(name = "authority_id")
     private Long id;
 
+    @Column(length = 10)
     @Enumerated(EnumType.STRING)
     private AuthorityType authority;
 

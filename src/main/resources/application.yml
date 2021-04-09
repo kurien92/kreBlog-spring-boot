@@ -11,6 +11,12 @@ spring:
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+  datasource:
+    hikari:
+      connection-timeout: 5000
+      validation-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
 
 server.error:
   include-exception: false

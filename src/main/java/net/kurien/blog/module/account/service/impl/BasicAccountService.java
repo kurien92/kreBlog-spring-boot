@@ -1,113 +1,135 @@
 package net.kurien.blog.module.account.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import net.kurien.blog.common.security.domain.AuthorityType;
 import net.kurien.blog.common.type.TrueFalseType;
-import net.kurien.blog.domain.Account;
-import net.kurien.blog.domain.SearchCriteria;
+import net.kurien.blog.domain.*;
 import net.kurien.blog.exception.InvalidRequestException;
-import net.kurien.blog.module.account.dao.AccountDao;
+import net.kurien.blog.exception.NotFoundDataException;
 import net.kurien.blog.module.account.repository.AccountRepository;
 import net.kurien.blog.module.account.service.AccountService;
+import net.kurien.blog.module.authority.repository.AccountAuthorityRepository;
+import net.kurien.blog.module.authority.service.AuthorityService;
 import net.kurien.blog.module.mail.service.MailService;
 import net.kurien.blog.util.EncryptionUtil;
-import net.kurien.blog.util.TimeUtil;
 import net.kurien.blog.util.ValidationUtil;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class BasicAccountService implements AccountService {
-    private final AccountDao accountDao;
     private final AccountRepository accountRepository;
+    private final AuthorityService authorityService;
+    private final AccountAuthorityRepository accountAuthorityRepository;
     private final MailService mailService;
 
+    @Override
     @Transactional(readOnly = true)
-    public Account getUser(Long id) {
+    public Account getAccount(Long id) {
         return accountRepository.findById(id).get();
     }
 
+    @Override
     @Transactional(readOnly = true)
-    public Account getUser(String email) {
+    public Account getAccount(String email) {
         return accountRepository.findByEmail(email);
     }
 
     @Override
-    public net.kurien.blog.module.account.entity.Account getByEmail(String accountEmail) {
-        return null;
+    @Transactional(readOnly = true)
+    public List<Account> getAccounts() {
+        return accountRepository.findAll();
     }
 
     @Override
-    public List<net.kurien.blog.module.account.entity.Account> getList(SearchCriteria criteria) {
-        return null;
-    }
+    @Transactional
+    public void add(AccountDto accountDto) throws InvalidRequestException {
+        checkPassword(accountDto.getPassword());
+        checkEmail(accountDto.getEmail());
+        checkNickname(accountDto.getNickname());
 
-    public List<net.kurien.blog.module.account.entity.Account> getUsers(SearchCriteria criteria) {
-        return accountDao.selectList(criteria);
-    }
+        Authority authority = authorityService.getAuthority(accountDto.getAuthority());
 
-    @Override
-    public void signUp(net.kurien.blog.module.account.entity.Account account) throws InvalidRequestException {
-        checkId(account.getAccountId());
-        checkPassword(account.getAccountPassword());
-        checkEmail(account.getAccountEmail());
-        checkNickname(account.getAccountNickname());
+        Account account = Account.builder()
+                .email(accountDto.getEmail())
+                .password(EncryptionUtil.hashPassword(accountDto.getPassword()))
+                .nickname(accountDto.getNickname())
+                .block(TrueFalseType.FALSE)
+                .signupTime(LocalDateTime.now())
+                .signupIp(accountDto.getSignupIp())
+                .build();
 
-        account.setAccountPassword(EncryptionUtil.hashPassword(account.getAccountPassword()));
-        account.setAccountBlock(TrueFalseType.FALSE);
-        account.setAccountSignUpDate(TimeUtil.currentTime());
+        AccountAuthority accountAuthority = AccountAuthority.builder()
+                .account(account)
+                .authority(authority)
+                .build();
 
-        accountDao.insert(account);
-    }
-
-    @Override
-    public void sendCertKey(String accountEmail, String certKey) throws MessagingException {
-        mailService.send("kurien92@gmail.com", accountEmail, "Kurien's Blog 인증메일입니다.", "인증번호는 '" + certKey + "' 입니다.");
-    }
-
-    @Override
-    public void add(net.kurien.blog.module.account.entity.Account account) {
-        accountDao.insert(account);
+        accountRepository.save(account);
+        accountAuthorityRepository.save(accountAuthority);
     }
 
     @Override
-    public void update(net.kurien.blog.module.account.entity.Account account) {
-        accountDao.update(account);
+    @Transactional
+    public void delete(Long id) {
+        accountRepository.deleteById(id);
     }
 
     @Override
-    public void delete(String accountId) {
-        accountDao.delete(accountId);
+    @Transactional
+    public void signup(AccountDto accountDto) throws InvalidRequestException {
+        checkPassword(accountDto.getPassword());
+        checkEmail(accountDto.getEmail());
+        checkNickname(accountDto.getNickname());
+
+        Account account = Account.builder()
+                .email(accountDto.getEmail())
+                .password(EncryptionUtil.hashPassword(accountDto.getPassword()))
+                .nickname(accountDto.getNickname())
+                .block(TrueFalseType.FALSE)
+                .signupTime(LocalDateTime.now())
+                .signupIp(accountDto.getSignupIp())
+                .build();
+
+        Authority authority = authorityService.getAuthority(AuthorityType.USER);
+
+        AccountAuthority accountAuthority = AccountAuthority.builder()
+                .account(account)
+                .authority(authority)
+                .createTime(LocalDateTime.now())
+                .build();
+
+        accountRepository.save(account);
+        accountAuthorityRepository.save(accountAuthority);
     }
 
     @Override
-    public void delete(Integer accountNo) {
-        accountDao.delete(accountNo);
+    public void sendCertKey(String email, String certKey) throws MessagingException {
+        mailService.send("kurien92@gmail.com", email, "Kurien's Blog 인증메일입니다.", "인증번호는 '" + certKey + "' 입니다.");
     }
 
-    public void passwordChange(net.kurien.blog.module.account.entity.Account account) throws InvalidRequestException {
-        net.kurien.blog.module.account.entity.Account selectedAccount = accountDao.selectByEmail(account.getAccountEmail());
+    @Override
+    @Transactional
+    public void changePassword(AccountDto accountDto) throws NotFoundDataException, InvalidRequestException {
+        Account account = accountRepository.findByEmail(accountDto.getEmail());
 
-        if(EncryptionUtil.checkPassword(account.getAccountPassword(), selectedAccount.getAccountPassword()) == true) {
+        if(account == null) {
+            throw new NotFoundDataException("해당 이메일이 존재하지 않습니다.");
+        }
+
+        if(EncryptionUtil.checkPassword(accountDto.getPassword(), account.getPassword()) == true) {
             throw new InvalidRequestException("이미 사용중인 비밀번호입니다. 다른 비밀번호를 입력해주세요.");
         }
 
-        account.setAccountPassword(EncryptionUtil.hashPassword(account.getAccountPassword()));
+        String hashedPassword = EncryptionUtil.hashPassword(accountDto.getPassword());
 
-        accountDao.updatePassword(account);
-    }
-
-    public void checkId(String accountId) throws InvalidRequestException {
-        if (ValidationUtil.length(accountId, 4, 30) == false) {
-            throw new InvalidRequestException("아이디의 길이를 확인하여주시기 바랍니다.");
-        }
-
-        if (isExistById(accountId)) {
-            throw new InvalidRequestException("중복된 아이디가 있습니다. 다른 아이디을 입력해주세요.");
-        }
+        account.changePassword(hashedPassword);
     }
 
     public void checkPassword(String accountPassword) throws InvalidRequestException {
@@ -126,35 +148,42 @@ public class BasicAccountService implements AccountService {
         }
     }
 
-    public void checkNickname(String accountNickname) throws InvalidRequestException {
-        if(ValidationUtil.length(accountNickname, 3, 20) == false) {
+    public void checkNickname(String nickname) throws InvalidRequestException {
+        if(ValidationUtil.length(nickname, 3, 20) == false) {
             throw new InvalidRequestException("닉네임의 길이를 확인하여주시기 바랍니다.");
         }
 
 
-        if(isExistByNickname(accountNickname)) {
+        if(isExistByNickname(nickname)) {
             throw new InvalidRequestException("중복된 닉네임이 있습니다. 다른 닉네임을 입력해주세요.");
         }
     }
 
-    public boolean isExistById(String accountId) {
-        if(accountDao.isExistById(accountId) == 0) {
+    public boolean isExistByEmail(String email) {
+        Account account = Account.builder()
+                .email(email)
+                .build();
+
+        Example<Account> accountExample = Example.of(account);
+        Long emailCount = accountRepository.count(accountExample);
+
+        if(emailCount == 0) {
             return false;
         }
 
         return true;
     }
 
-    public boolean isExistByEmail(String accountEmail) {
-        if(accountDao.isExistByEmail(accountEmail) == 0) {
-            return false;
-        }
+    public boolean isExistByNickname(String nickname) {
+        Account account = Account.builder()
+                .nickname(nickname)
+                .build();
 
-        return true;
-    }
+        Example<Account> accountExample = Example.of(account);
 
-    public boolean isExistByNickname(String accountNickname) {
-        if(accountDao.isExistByNickname(accountNickname) == 0) {
+        Long emailCount = accountRepository.count(accountExample);
+
+        if(emailCount == 0) {
             return false;
         }
 

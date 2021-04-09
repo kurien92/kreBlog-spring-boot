@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         String PREFIX = "ROLE_";
 
-        Account account = accountService.getUser(username);
+        Account account = accountService.getAccount(username);
 
         if(account == null) {
             throw new UsernameNotFoundException("아이디 또는 비밀번호가 잘못 입력되었습니다.");

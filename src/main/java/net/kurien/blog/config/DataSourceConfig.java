@@ -25,7 +25,6 @@ public class DataSourceConfig {
     @Primary
     public DataSource dataSource() {
         DataSource dataSource = new HikariDataSource(hikariConfig());
-        log.info("dataSource : {}", dataSource);
 
         return dataSource;
     }

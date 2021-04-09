@@ -11,22 +11,6 @@
 
             <div id="account_signup_form">
                 <div class="kre_row">
-                    <label for="accountId" class="row_column">ID</label><input type="text" id="accountId" name="accountId" class="kre_inp" placeholder="ID">
-                </div>
-
-                <div id="accountIdAlert" class="kre_row kre_row_alert"></div>
-
-                <div class="kre_row">
-                    <label for="accountPassword" class="row_column">PW</label><input type="password" id="accountPassword" name="accountPassword" class="kre_inp" placeholder="Password">
-                </div>
-
-                <div id="accountPasswordAlert" class="kre_row kre_row_alert"></div>
-
-                <div class="kre_row">
-                    <label for="viewPassword" class="row_column">View PW</label><button type="button" id="viewPassword" class="kre_btn reverse_btn">View</button>
-                </div>
-
-                <div class="kre_row">
                     <label for="accountEmail" class="row_column">Email</label><input type="text" id="accountEmail" name="accountEmail" class="kre_inp" placeholder="Email">
                 </div>
 
@@ -45,6 +29,16 @@
                 </div>
 
                 <div class="kre_row">
+                    <label for="accountPassword" class="row_column">PW</label><input type="password" id="accountPassword" name="accountPassword" class="kre_inp" placeholder="Password">
+                </div>
+
+                <div id="accountPasswordAlert" class="kre_row kre_row_alert"></div>
+
+                <div class="kre_row">
+                    <label for="viewPassword" class="row_column">View PW</label><button type="button" id="viewPassword" class="kre_btn reverse_btn">View</button>
+                </div>
+
+                <div class="kre_row">
                     <label for="accountNickname" class="row_column">Nickname</label><input type="text" id="accountNickname" name="accountNickname" class="kre_inp" placeholder="Nickname">
                 </div>
 
@@ -59,7 +53,6 @@
 
     <script>
         let accountCheck = {
-            id: false,
             password: false,
             email: false,
             certedEmail: false,
@@ -67,20 +60,19 @@
         };
 
         let validTimeout = {
-            id: null,
             password: null,
             email: null,
             nickname: null
         };
 
-        $("#accountId").on("keyup", function() {
-            if(validTimeout.id !== null) {
+        $("#accountEmail").on("keyup", function() {
+            if(validTimeout.email !== null) {
                 return false;
             }
 
-            validTimeout.id = setTimeout(function() {
-                validId();
-                validTimeout.id = null;
+            validTimeout.email = setTimeout(function() {
+                validEmail();
+                validTimeout.email = null;
             }, 1000);
         });
 
@@ -95,17 +87,6 @@
             }, 1000);
         });
 
-        $("#accountEmail").on("keyup", function() {
-            if(validTimeout.email !== null) {
-                return false;
-            }
-
-            validTimeout.email = setTimeout(function() {
-                validEmail();
-                validTimeout.email = null;
-            }, 1000);
-        });
-
         $("#accountNickname").on("keyup", function() {
             if(validTimeout.nickname !== null) {
                 return false;
@@ -117,22 +98,24 @@
             }, 1000);
         });
 
-        function validId() {
+        function validEmail() {
             var data = {
-                "accountId": $("#accountId").val()
+                "email": $("#accountEmail").val()
             };
 
-            ajax("post", contextPath + "/account/checkId", data).then(function() {
-                accountCheck.id = true;
-                $("#accountIdAlert").hide(0);
+            ajax("post", contextPath + "/account/checkEmail", data).then(function() {
+                accountCheck.email = true;
+                $("#accountEmailAlert").hide(0);
+                $("#sendCertKey").prop("disabled", false);
                 checkedAccount();
             }).catch(function(err) {
-                accountCheck.id = false;
+                accountCheck.email = false;
+                $("#sendCertKey").prop("disabled", true);
                 checkedAccount();
 
                 if(err.message !== "") {
-                    $("#accountIdAlert").show(0);
-                    $("#accountIdAlert").text(err.message);
+                    $("#accountEmailAlert").show(0);
+                    $("#accountEmailAlert").text(err.message);
                     return;
                 }
 
@@ -156,34 +139,9 @@
             checkedAccount();
         }
 
-        function validEmail() {
-            var data = {
-                "accountEmail": $("#accountEmail").val()
-            };
-
-            ajax("post", contextPath + "/account/checkEmail", data).then(function() {
-                accountCheck.email = true;
-                $("#accountEmailAlert").hide(0);
-                $("#sendCertKey").prop("disabled", false);
-                checkedAccount();
-            }).catch(function(err) {
-                accountCheck.email = false;
-                $("#sendCertKey").prop("disabled", true);
-                checkedAccount();
-
-                if(err.message !== "") {
-                    $("#accountEmailAlert").show(0);
-                    $("#accountEmailAlert").text(err.message);
-                    return;
-                }
-
-                alert("알 수 없는 오류가 발생했습니다.");
-            });
-        }
-
         function validNickname() {
             var data = {
-                "accountNickname": $("#accountNickname").val()
+                "nickname": $("#accountNickname").val()
             };
 
             ajax("post", contextPath + "/account/checkNickname", data).then(function() {
@@ -245,7 +203,7 @@
             $("#sendCertKey").prop("disabled", true);
 
             var data = {
-                "accountEmail": $("#accountEmail").val(),
+                "email": $("#accountEmail").val(),
                 "certType": "signup"
             };
 
@@ -269,7 +227,7 @@
 
         $("#checkCertBtn").on("click", function() {
             var data = {
-                "accountEmail": $("#accountEmail").val(),
+                "email": $("#accountEmail").val(),
                 "certKey": $("#certKey").val(),
                 "certType": "signup"
             };
@@ -302,10 +260,9 @@
 
             var data = {
                 "token": $("#token").val(),
-                "accountId": $("#accountId").val(),
-                "accountPassword": $("#accountPassword").val(),
-                "accountEmail": $("#accountEmail").val(),
-                "accountNickname": $("#accountNickname").val()
+                "email": $("#accountEmail").val(),
+                "password": $("#accountPassword").val(),
+                "nickname": $("#accountNickname").val()
             }
 
             ajax("post", contextPath + "/account/signupCheck", data).then(function() {
