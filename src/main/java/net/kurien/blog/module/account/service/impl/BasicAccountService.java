@@ -3,7 +3,10 @@ package net.kurien.blog.module.account.service.impl;
 import lombok.RequiredArgsConstructor;
 import net.kurien.blog.common.security.domain.AuthorityType;
 import net.kurien.blog.common.type.TrueFalseType;
-import net.kurien.blog.domain.*;
+import net.kurien.blog.dto.AccountDto;
+import net.kurien.blog.entity.Account;
+import net.kurien.blog.entity.AccountAuthority;
+import net.kurien.blog.entity.Authority;
 import net.kurien.blog.exception.InvalidRequestException;
 import net.kurien.blog.exception.NotFoundDataException;
 import net.kurien.blog.module.account.repository.AccountRepository;
@@ -20,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

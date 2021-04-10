@@ -1,8 +1,7 @@
 package net.kurien.blog.module.authority.service;
 
 import net.kurien.blog.common.security.domain.AuthorityType;
-import net.kurien.blog.domain.Authority;
-import net.kurien.blog.module.authority.entity.GroupAuthority;
+import net.kurien.blog.entity.Authority;
 
 import java.util.List;
 

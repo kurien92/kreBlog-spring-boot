@@ -1,4 +1,4 @@
-package net.kurien.blog.domain;
+package net.kurien.blog.dto;
 
 import lombok.Getter;
 import lombok.Setter;

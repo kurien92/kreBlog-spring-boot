@@ -1,4 +1,4 @@
-package net.kurien.blog.domain;
+package net.kurien.blog.entity;
 
 import lombok.*;
 import net.kurien.blog.common.security.domain.AuthorityType;

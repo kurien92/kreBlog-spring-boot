@@ -1,13 +1,18 @@
 server:
   port: 8080
+  tomcat:
+    use-relative-redirects: true
 
 spring:
   mvc:
     converters:
       preferred-json-mapper: gson
   jpa:
+    show-sql: false
+    generate-ddl: false
     open-in-view: false
     hibernate:
+      ddl-auto: none
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
@@ -21,7 +26,7 @@ spring:
 server.error:
   include-exception: false
   include-stacktrace: never # 오류 응답에 stacktrace 내용을 포함할 지 여부
-  path: '/error/badRequest' # 오류 응답을 처리할 Handler의 경로
+  path: '/error' # 오류 응답을 처리할 Handler의 경로
   whitelabel.enabled: true # 서버 오류 발생시 브라우저에 보여줄 기본 페이지 생성 여부
 
 jasypt:
@@ -59,6 +64,9 @@ spring:
   config:
     activate:
       on-profile: dev
+
+  jpa:
+    show-sql: false
 
 db:
   driverClassName: org.mariadb.jdbc.Driver

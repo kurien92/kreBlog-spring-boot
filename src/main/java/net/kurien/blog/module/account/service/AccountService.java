@@ -1,8 +1,7 @@
 package net.kurien.blog.module.account.service;
 
-import net.kurien.blog.domain.Account;
-import net.kurien.blog.domain.AccountDto;
-import net.kurien.blog.domain.SearchCriteria;
+import net.kurien.blog.entity.Account;
+import net.kurien.blog.dto.AccountDto;
 import net.kurien.blog.exception.InvalidRequestException;
 import net.kurien.blog.exception.NotFoundDataException;
 

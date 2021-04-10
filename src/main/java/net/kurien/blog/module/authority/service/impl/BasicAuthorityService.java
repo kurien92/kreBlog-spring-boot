@@ -2,13 +2,9 @@ package net.kurien.blog.module.authority.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import net.kurien.blog.common.security.domain.AuthorityType;
-import net.kurien.blog.module.authority.dao.AuthorityDao;
-import net.kurien.blog.module.authority.dao.GroupAuthorityDao;
-import net.kurien.blog.domain.Authority;
-import net.kurien.blog.module.authority.entity.GroupAuthority;
+import net.kurien.blog.entity.Authority;
 import net.kurien.blog.module.authority.repository.AuthorityRepository;
 import net.kurien.blog.module.authority.service.AuthorityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

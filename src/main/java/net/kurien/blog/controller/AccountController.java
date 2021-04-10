@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.kurien.blog.common.template.Template;
-import net.kurien.blog.domain.AccountDto;
+import net.kurien.blog.dto.AccountDto;
 import net.kurien.blog.exception.InvalidRequestException;
 import net.kurien.blog.exception.NotFoundDataException;
 import net.kurien.blog.module.account.service.AccountService;

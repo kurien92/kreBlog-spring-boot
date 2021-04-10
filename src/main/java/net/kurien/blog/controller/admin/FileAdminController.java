@@ -6,15 +6,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonArray;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.kurien.blog.module.file.dto.FileDTO;
 import net.kurien.blog.module.file.entity.File;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,20 +24,18 @@ import com.google.gson.JsonObject;
 import net.kurien.blog.module.file.service.FileService;
 import net.kurien.blog.util.RequestUtil;
 
+@Slf4j
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/admin/file")
 public class FileAdminController {
-	private static final Logger logger = LoggerFactory.getLogger(FileAdminController.class);
-
 	private final FileService fileService;
 
-	@Autowired
-	public FileAdminController(FileService fileService) {
-		this.fileService = fileService;
-	}
+	@Value("${user.dir}")
+	private String userDir;
 
 	@RequestMapping(value = "/upload/ckeditor/{service}", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
-	public @ResponseBody JsonObject ckeditorImageUpload(@PathVariable String service, MultipartHttpServletRequest multiFile, HttpServletResponse response) throws Exception {
+	public @ResponseBody JsonObject ckeditorImageUpload(@PathVariable String service, MultipartHttpServletRequest multiFile) throws Exception {
 		JsonObject json = new JsonObject();
 		
 		MultipartFile file = multiFile.getFile("upload");
@@ -61,7 +58,7 @@ public class FileAdminController {
 			return null;
 		}
 
-		String uploadPath = multiFile.getServletContext().getRealPath("/") + "../../files/" + service;
+		String uploadPath = userDir + "/files/" + service;
 
 		FileDTO fileDto = new FileDTO();
 
@@ -118,7 +115,7 @@ public class FileAdminController {
 			fileDtos.add(fileDto);
 		}
 
-		String uploadPath = multiFile.getServletContext().getRealPath("/") + "../../files/" + service;
+		String uploadPath = userDir + "/files/" + service;
 
 		fileDtos = fileService.upload(uploadPath, service, fileDtos, RequestUtil.getRemoteAddr(multiFile));
 

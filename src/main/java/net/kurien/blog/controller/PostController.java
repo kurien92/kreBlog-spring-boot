@@ -5,6 +5,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.kurien.blog.common.security.CurrentUser;
 import net.kurien.blog.common.security.domain.User;
 import org.slf4j.Logger;
@@ -29,25 +31,16 @@ import net.kurien.blog.module.shortUrl.service.ServiceShortUrlService;
 import net.kurien.blog.module.shortUrl.service.ShortUrlService;
 import net.kurien.blog.util.HtmlUtil;
 
+@Slf4j
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
-	private static final Logger logger = LoggerFactory.getLogger(PostController.class);
-
 	private final Template template;
 	private final PostService postService;
 	private final CategoryService categoryService;
 	private final ShortUrlService shortUrlService;
 	private final ServiceShortUrlService serviceShortUrlService;
-
-	@Autowired
-	public PostController(Template template, PostService postService, CategoryService categoryService, ShortUrlService shortUrlService, ServiceShortUrlService serviceShortUrlService) {
-		this.template = template;
-		this.postService = postService;
-		this.categoryService = categoryService;
-		this.shortUrlService = shortUrlService;
-		this.serviceShortUrlService = serviceShortUrlService;
-	}
 
 	/**
 	 * 사용자가 목록 화면에 접속한다.

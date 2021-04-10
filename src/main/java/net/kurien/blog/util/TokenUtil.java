@@ -42,7 +42,7 @@ public class TokenUtil {
 		byte[] mdBytes = md.digest();
 		
 		StringBuffer sb = new StringBuffer();
-		
+
 		for(int i = 0; i < mdBytes.length; i++) {
 			sb.append(Integer.toString((mdBytes[i]&0xff) + 0x100, 16).substring(1));
 		}
@@ -50,6 +50,7 @@ public class TokenUtil {
 		return sb.toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void setTokenMap(HttpServletRequest request, String tokenType, String tokenKey, Date tokenExpirationTime) {
 		tokenType = "token_" + tokenType;
 
@@ -59,7 +60,7 @@ public class TokenUtil {
 		Object tokenSession = session.getAttribute(tokenType);
 
 		if(tokenSession != null) {
-			tokenMap = (Map) tokenSession;
+			tokenMap = (Map<String, Token>) tokenSession;
 		}
 
 		Token token = new Token();
@@ -71,10 +72,9 @@ public class TokenUtil {
 		session.setAttribute(tokenType, tokenMap);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static Token getTokenMap(HttpServletRequest request, String tokenType, String tokenKey) {
 		tokenType = "token_" + tokenType;
-
-		Map<String, Token> tokenMap = null;
 
 		HttpSession session = request.getSession();
 		Object tokenSession = session.getAttribute(tokenType);
@@ -83,7 +83,7 @@ public class TokenUtil {
 			return null;
 		}
 
-		tokenMap = (Map<String, Token>)tokenSession;
+		Map<String, Token> tokenMap = (Map<String, Token>)tokenSession;
 		Token token = tokenMap.get(tokenKey);
 
 		if(token == null) {

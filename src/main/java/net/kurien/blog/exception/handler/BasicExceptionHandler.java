@@ -3,10 +3,12 @@ package net.kurien.blog.exception.handler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,29 +24,23 @@ import net.kurien.blog.module.category.service.CategoryService;
 
 import java.io.FileNotFoundException;
 
+@Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class BasicExceptionHandler {
-	Logger logger = LoggerFactory.getLogger(BasicExceptionHandler.class);
-
 	private final Template template;
 	private final CategoryService categoryService;
 
-	@Autowired
-	public BasicExceptionHandler(Template template, CategoryService categoryService) {
-		this.template = template;
-		this.categoryService = categoryService;
-	}
-
 	@ExceptionHandler({NotFoundDataException.class})
 	@ResponseStatus(value=HttpStatus.NOT_FOUND)
-	public String notFoundExceptionHandler(HttpServletRequest request, HttpServletResponse response, Model model, Exception nfe) {
-		String requestURI = (String)request.getAttribute("javax.servlet.forward.request_uri");
+	public String notFoundExceptionHandler(HttpServletRequest request, Model model, Exception nfe) {
+		String requestURI = request.getRequestURI();
 		String referer = request.getHeader("referer");
 
 		model.addAttribute("referer", referer);
 
 		try {
-			logger.info("exception requestURI: " + requestURI, nfe);
+			log.info("exception requestURI: " + requestURI, nfe);
 
 			model.addAttribute("template", this.setTemplate(request));
 			model.addAttribute("exceptionMsg", nfe.getMessage());
@@ -52,21 +48,21 @@ public class BasicExceptionHandler {
 
 			return "error/exception";
 		} catch(Exception e) {
-			logger.error("exception requestURI: " + requestURI, e);
+			log.error("exception requestURI: " + requestURI, e);
 			return "error/fatalError";
 		}
 	}
 
 	@ExceptionHandler({FileNotFoundException.class})
 	@ResponseStatus(value=HttpStatus.NOT_FOUND)
-	public String fileNotFoundExceptionHandler(HttpServletRequest request, HttpServletResponse response, Model model, Exception fnfe) {
-		String requestURI = (String)request.getAttribute("javax.servlet.forward.request_uri");
+	public String fileNotFoundExceptionHandler(HttpServletRequest request, Model model, Exception fnfe) {
+		String requestURI = request.getRequestURI();
 		String referer = request.getHeader("referer");
 
 		model.addAttribute("referer", referer);
 
 		try {
-			logger.info("exception requestURI: " + requestURI, fnfe);
+			log.info("exception requestURI: " + requestURI, fnfe);
 
 			model.addAttribute("template", this.setTemplate(request));
 			model.addAttribute("exceptionMsg", fnfe.getMessage());
@@ -74,7 +70,7 @@ public class BasicExceptionHandler {
 
 			return "error/exception";
 		} catch(Exception e) {
-			logger.error("exception requestURI: " + requestURI, e);
+			log.error("exception requestURI: " + requestURI, e);
 			return "error/fatalError";
 		}
 	}
@@ -82,13 +78,13 @@ public class BasicExceptionHandler {
 	@ExceptionHandler({InvalidRequestException.class})
 	@ResponseStatus(value=HttpStatus.BAD_REQUEST)
 	public String invalidRequestExceptionhandler(HttpServletRequest request, HttpServletResponse response, Model model, Exception ire) {
-		String requestURI = (String)request.getAttribute("javax.servlet.forward.request_uri");
+		String requestURI = request.getRequestURI();
 		String referer = request.getHeader("referer");
 
 		model.addAttribute("referer", referer);
 		
 		try {
-			logger.error("exception requestURI: " + requestURI, ire);
+			log.error("exception requestURI: " + requestURI, ire);
 	
 	    	model.addAttribute("template", this.setTemplate(request));
 			model.addAttribute("exceptionMsg", ire.getMessage());
@@ -96,7 +92,7 @@ public class BasicExceptionHandler {
 
 			return "error/exception";
 		} catch(Exception e) {
-			logger.error("exception requestURI: " + requestURI, e);
+			log.error("exception requestURI: " + requestURI, e);
 			return "error/fatalError";
 		}
 	}
@@ -104,13 +100,13 @@ public class BasicExceptionHandler {
 	@ExceptionHandler({Exception.class})
 	@ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR)
 	public String exceptionHandler(HttpServletRequest request, HttpServletResponse response, Model model, Exception e) {
-			String requestURI = (String)request.getAttribute("javax.servlet.forward.request_uri");
+			String requestURI = request.getRequestURI();
 			String referer = request.getHeader("referer");
 
 			model.addAttribute("referer", referer);
 
 		try {
-			logger.warn("exception requestURI: " + requestURI, e);
+			log.warn("exception requestURI: " + requestURI, e);
 	
 	    	model.addAttribute("template", this.setTemplate(request));
 			model.addAttribute("exceptionMsg", "알 수 없는 오류가 발생했습니다.");
@@ -118,7 +114,7 @@ public class BasicExceptionHandler {
 
 			return "error/exception";
 		} catch(Exception fatalError) {
-			logger.error("exception requestURI: " + requestURI, fatalError);
+			log.error("exception requestURI: " + requestURI, fatalError);
 			return "error/fatalError";
 		}
 	}

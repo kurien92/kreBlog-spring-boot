@@ -1,8 +1,7 @@
-package net.kurien.blog.domain;
+package net.kurien.blog.entity;
 
 import lombok.*;
 import net.kurien.blog.common.type.TrueFalseType;
-import net.kurien.blog.util.EncryptionUtil;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

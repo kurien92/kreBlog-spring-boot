@@ -1,6 +1,5 @@
 package net.kurien.blog.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +10,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
-import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement

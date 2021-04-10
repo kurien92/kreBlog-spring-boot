@@ -112,7 +112,7 @@ public class FileUtil {
     public static void download(String filePath, String realFileName, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		FileInputStream fis = null;
 		BufferedInputStream bis = null;
-		OutputStream outputStream = response.getOutputStream();
+		OutputStream outputStream = null;
 
 		File file = new File(filePath);
 
@@ -138,6 +138,7 @@ public class FileUtil {
 		response.setHeader("Content-Transfer-Encoding", "binary");
 
 		try {
+			outputStream = response.getOutputStream();
 			fis = new FileInputStream(filePath);
 			bis = new BufferedInputStream(fis);
 

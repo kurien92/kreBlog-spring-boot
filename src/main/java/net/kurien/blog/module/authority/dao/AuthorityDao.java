@@ -1,6 +1,6 @@
 package net.kurien.blog.module.authority.dao;
 
-import net.kurien.blog.domain.Authority;
+import net.kurien.blog.entity.Authority;
 
 import java.util.List;
 

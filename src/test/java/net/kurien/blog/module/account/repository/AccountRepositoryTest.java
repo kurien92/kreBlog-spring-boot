@@ -1,7 +1,7 @@
 package net.kurien.blog.module.account.repository;
 
 import net.kurien.blog.common.type.TrueFalseType;
-import net.kurien.blog.domain.Account;
+import net.kurien.blog.entity.Account;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

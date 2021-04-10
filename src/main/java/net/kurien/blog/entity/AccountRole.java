@@ -1,4 +1,4 @@
-package net.kurien.blog.domain;
+package net.kurien.blog.entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;

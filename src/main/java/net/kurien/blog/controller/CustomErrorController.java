@@ -4,6 +4,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,17 +18,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import net.kurien.blog.common.template.Template;
 import net.kurien.blog.exception.handler.BasicExceptionHandler;
+import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/error")
 public class CustomErrorController implements ErrorController {
 	private final Template template;
-
-	@Autowired
-	public CustomErrorController(Template template) {
-		this.template = template;
-	}
 
 	@RequestMapping
 	public String handleError(HttpServletRequest request) {
@@ -37,26 +35,25 @@ public class CustomErrorController implements ErrorController {
 			int statusCode = Integer.valueOf(status.toString());
 
 			if (statusCode == HttpStatus.BAD_REQUEST.value()) {
-				return "error/badRequest";
+				return "redirect: /error/badRequest";
 			} else if(statusCode == HttpStatus.FORBIDDEN.value()) {
-				return "error/forbidden";
+				return "redirect: /error/forbidden";
 			} else if(statusCode == HttpStatus.NOT_FOUND.value()) {
-					return "error/notFound";
+				return "redirect: /error/notFound";
 			} else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-				return "error/internalServerError";
+				return "redirect: /error/internalServerError";
 			} else if(statusCode == HttpStatus.SERVICE_UNAVAILABLE.value()) {
-				return "error/serviceUnavailable";
+				return "redirect: /error/serviceUnavailable";
 			}
 		}
 
 		return "error/exception";
 	}
 
-
 	@RequestMapping("/badRequest")
 	@ResponseStatus(value=HttpStatus.BAD_REQUEST)
 	public String badRequest(HttpServletRequest request, HttpServletResponse response, Model model) {
-		String requestURI = (String)request.getAttribute("javax.servlet.forward.request_uri");
+		String requestURI = request.getRequestURI();
 		String referer = request.getHeader("referer");
 
 		model.addAttribute("referer", referer);
@@ -74,7 +71,7 @@ public class CustomErrorController implements ErrorController {
 	@RequestMapping("/forbidden")
 	@ResponseStatus(value=HttpStatus.FORBIDDEN)
 	public String accessDenied(HttpServletRequest request, HttpServletResponse response, Model model) {
-		String requestURI = (String)request.getAttribute("javax.servlet.forward.request_uri");
+		String requestURI = request.getRequestURI();
 		String referer = request.getHeader("referer");
 
 		model.addAttribute("referer", referer);
@@ -92,7 +89,7 @@ public class CustomErrorController implements ErrorController {
 	@RequestMapping("/notFound")
 	@ResponseStatus(value=HttpStatus.NOT_FOUND)
 	public String notFound(HttpServletRequest request, HttpServletResponse response, Model model) {
-		String requestURI = (String)request.getAttribute("javax.servlet.forward.request_uri");
+		String requestURI = request.getRequestURI();
 		String referer = request.getHeader("referer");
 
 		model.addAttribute("referer", referer);
@@ -110,7 +107,7 @@ public class CustomErrorController implements ErrorController {
 	@RequestMapping("/internalServerError")
 	@ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR)
 	public String internalServerError(HttpServletRequest request, HttpServletResponse response, Model model) {
-		String requestURI = (String)request.getAttribute("javax.servlet.forward.request_uri");
+		String requestURI = request.getRequestURI();
 		String referer = request.getHeader("referer");
 
 		model.addAttribute("referer", referer);
@@ -128,7 +125,7 @@ public class CustomErrorController implements ErrorController {
 	@RequestMapping("/serviceUnavailable")
 	@ResponseStatus(value=HttpStatus.SERVICE_UNAVAILABLE)
 	public String serviceUnavailable(HttpServletRequest request, HttpServletResponse response, Model model) {
-		String requestURI = (String)request.getAttribute("javax.servlet.forward.request_uri");
+		String requestURI = request.getRequestURI();
 		String referer = request.getHeader("referer");
 
 		model.addAttribute("referer", referer);

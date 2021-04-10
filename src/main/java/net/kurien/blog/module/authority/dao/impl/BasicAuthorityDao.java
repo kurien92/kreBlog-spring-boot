@@ -1,7 +1,7 @@
 package net.kurien.blog.module.authority.dao.impl;
 
 import net.kurien.blog.module.authority.dao.AuthorityDao;
-import net.kurien.blog.domain.Authority;
+import net.kurien.blog.entity.Authority;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

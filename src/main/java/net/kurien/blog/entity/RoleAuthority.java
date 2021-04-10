@@ -1,4 +1,4 @@
-package net.kurien.blog.domain;
+package net.kurien.blog.entity;
 
 import lombok.*;
 
@@ -8,25 +8,25 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class AccountAuthority {
+public class RoleAuthority {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "account_authority_id")
+    @Column(name = "role_authority_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @ManyToOne
     @JoinColumn(name = "authority_id")
     private Authority authority;
 
-    private LocalDateTime createTime;
+    private LocalDateTime createAt;
 
     @Builder
-    public AccountAuthority(Account account, Authority authority, LocalDateTime createTime) {
-        this.account = account;
+    public RoleAuthority(Role role, Authority authority, LocalDateTime createAt) {
+        this.role = role;
         this.authority = authority;
-        this.createTime = createTime;
+        this.createAt = createAt;
     }
 }
