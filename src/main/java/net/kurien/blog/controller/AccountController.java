@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.kurien.blog.common.template.Template;
 import net.kurien.blog.dto.AccountDto;
+import net.kurien.blog.exception.DuplicatedDataException;
 import net.kurien.blog.exception.InvalidRequestException;
 import net.kurien.blog.exception.NotFoundDataException;
 import net.kurien.blog.module.account.service.AccountService;
@@ -157,7 +158,7 @@ public class AccountController {
 
     @ResponseBody
     @RequestMapping(value="/account/signupCheck", method = RequestMethod.POST)
-    public JsonObject signupCheck(String token, AccountDto accountDto, Model model, HttpServletRequest request) {
+    public JsonObject signupCheck(String token, AccountDto accountDto, HttpServletRequest request) {
         /**
          * 세션에 입력된 메일과 등록하려는 메일주소가 같은지 확인.
          * 인증이 되었는지 확인
@@ -179,7 +180,7 @@ public class AccountController {
             accountService.signup(accountDto);
 
             CertificationUtil.clearCert(request, "find");
-        } catch(InvalidRequestException e) {
+        } catch(InvalidRequestException | DuplicatedDataException e) {
             json.addProperty("result", "fail");
             json.add("value", new JsonObject());
             json.addProperty("message", e.getMessage());
@@ -201,7 +202,7 @@ public class AccountController {
 
         try {
             accountService.checkEmail(email);
-        } catch(InvalidRequestException e) {
+        } catch(InvalidRequestException | DuplicatedDataException e) {
             json.addProperty("result", "fail");
             json.add("value", new JsonObject());
             json.addProperty("message", e.getMessage());
@@ -223,7 +224,7 @@ public class AccountController {
 
         try {
             accountService.checkNickname(nickname);
-        } catch(InvalidRequestException e) {
+        } catch(InvalidRequestException | DuplicatedDataException e) {
             json.addProperty("result", "fail");
             json.add("value", new JsonObject());
             json.addProperty("message", e.getMessage());

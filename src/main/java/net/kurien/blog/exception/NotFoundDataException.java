@@ -6,8 +6,6 @@ package net.kurien.blog.exception;
  */
 
 public class NotFoundDataException extends Exception {
-	private static final long serialVersionUID = -6335211481427236904L;
-
 	public NotFoundDataException () {
 		super("존재하지 않는 데이터입니다.");
 	}

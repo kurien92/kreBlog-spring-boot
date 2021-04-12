@@ -6,8 +6,6 @@ package net.kurien.blog.exception;
  */
 
 public class NotUsePrimaryKeyException extends Exception {
-	private static final long serialVersionUID = -8665725939866139883L;
-	
 	public NotUsePrimaryKeyException() {
 		super("기본키로 사용할 수 없는 값입니다.");
 	}

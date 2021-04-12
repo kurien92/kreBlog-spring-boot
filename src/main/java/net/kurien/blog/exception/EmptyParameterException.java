@@ -6,8 +6,6 @@ package net.kurien.blog.exception;
  */
 
 public class EmptyParameterException extends Exception {
-	private static final long serialVersionUID = 6578402461846716936L;
-
 	public EmptyParameterException () {
 		super("빈 데이터가 전달되었습니다.");
 	}

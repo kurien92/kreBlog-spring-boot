@@ -7,6 +7,7 @@ import net.kurien.blog.dto.AccountDto;
 import net.kurien.blog.entity.Account;
 import net.kurien.blog.entity.AccountAuthority;
 import net.kurien.blog.entity.Authority;
+import net.kurien.blog.exception.DuplicatedDataException;
 import net.kurien.blog.exception.InvalidRequestException;
 import net.kurien.blog.exception.NotFoundDataException;
 import net.kurien.blog.module.account.repository.AccountRepository;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +37,11 @@ public class BasicAccountService implements AccountService {
     @Override
     @Transactional(readOnly = true)
     public Account getAccount(Long id) {
-        return accountRepository.findById(id).get();
+        Optional<Account> accountOptional = accountRepository.findById(id);
+        if(!accountOptional.isPresent()) {
+            return null;
+        }
+        return accountOptional.get();
     }
 
     @Override
@@ -52,7 +58,7 @@ public class BasicAccountService implements AccountService {
 
     @Override
     @Transactional
-    public void add(AccountDto accountDto) throws InvalidRequestException {
+    public void add(AccountDto accountDto) throws InvalidRequestException, DuplicatedDataException {
         checkPassword(accountDto.getPassword());
         checkEmail(accountDto.getEmail());
         checkNickname(accountDto.getNickname());
@@ -85,7 +91,7 @@ public class BasicAccountService implements AccountService {
 
     @Override
     @Transactional
-    public void signup(AccountDto accountDto) throws InvalidRequestException {
+    public void signup(AccountDto accountDto) throws InvalidRequestException, DuplicatedDataException {
         checkPassword(accountDto.getPassword());
         checkEmail(accountDto.getEmail());
         checkNickname(accountDto.getNickname());
@@ -140,24 +146,24 @@ public class BasicAccountService implements AccountService {
         }
     }
 
-    public void checkEmail(String accountEmail) throws InvalidRequestException {
+    public void checkEmail(String accountEmail) throws InvalidRequestException, DuplicatedDataException {
         if (ValidationUtil.email(accountEmail) == false) {
             throw new InvalidRequestException("이메일 형식이 아닙니다. 확인 후 다시시도하여주시기 바랍니다.");
         }
 
         if (isExistByEmail(accountEmail)) {
-            throw new InvalidRequestException("중복된 이메일이 있습니다. 다른 이메일을 입력해주세요.");
+            throw new DuplicatedDataException("중복된 이메일이 있습니다. 다른 이메일을 입력해주세요.");
         }
     }
 
-    public void checkNickname(String nickname) throws InvalidRequestException {
+    public void checkNickname(String nickname) throws InvalidRequestException, DuplicatedDataException {
         if(ValidationUtil.length(nickname, 3, 20) == false) {
             throw new InvalidRequestException("닉네임의 길이를 확인하여주시기 바랍니다.");
         }
 
 
         if(isExistByNickname(nickname)) {
-            throw new InvalidRequestException("중복된 닉네임이 있습니다. 다른 닉네임을 입력해주세요.");
+            throw new DuplicatedDataException("중복된 닉네임이 있습니다. 다른 닉네임을 입력해주세요.");
         }
     }
 

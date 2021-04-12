@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
-@ToString(exclude = {"accountAuthorities", "accountRoles"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Account {

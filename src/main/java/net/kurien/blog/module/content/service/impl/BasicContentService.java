@@ -1,7 +1,7 @@
 package net.kurien.blog.module.content.service.impl;
 
 import net.kurien.blog.domain.SearchCriteria;
-import net.kurien.blog.exception.DuplicatedKeyException;
+import net.kurien.blog.exception.DuplicatedDataException;
 import net.kurien.blog.exception.NotFoundDataException;
 import net.kurien.blog.module.content.dao.ContentDao;
 import net.kurien.blog.module.content.entity.Content;
@@ -45,9 +45,9 @@ public class BasicContentService implements ContentService, Searchable, SitemapC
     }
 
     @Override
-    public Content create(Content content, Integer[] fileNos) throws DuplicatedKeyException {
+    public Content create(Content content, Integer[] fileNos) throws DuplicatedDataException {
         if(isExist(content.getContentId(), "Y")) {
-            throw new DuplicatedKeyException(content.getContentId() + " 컨텐츠가 이미 존재합니다.");
+            throw new DuplicatedDataException(content.getContentId() + " 컨텐츠가 이미 존재합니다.");
         }
 
         content.setContentWriteTime(TimeUtil.currentTime());

@@ -13,7 +13,7 @@ import net.kurien.blog.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import net.kurien.blog.exception.DuplicatedKeyException;
+import net.kurien.blog.exception.DuplicatedDataException;
 import net.kurien.blog.exception.EmptyParameterException;
 import net.kurien.blog.exception.NotFoundDataException;
 import net.kurien.blog.exception.NotUsePrimaryKeyException;
@@ -80,7 +80,7 @@ public class BasicPostService implements PostService, Searchable, SitemapCreatab
 			}
 			
 			if(isExist(post.getPostNo(), "Y")) {
-				throw new DuplicatedKeyException(post.getPostNo() + "번 포스트가 이미 존재합니다.");
+				throw new DuplicatedDataException(post.getPostNo() + "번 포스트가 이미 존재합니다.");
 			}
 		}
 
