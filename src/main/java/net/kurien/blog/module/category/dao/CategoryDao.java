@@ -2,22 +2,22 @@ package net.kurien.blog.module.category.dao;
 
 import java.util.List;
 
-import net.kurien.blog.module.category.entity.Category;
+import net.kurien.blog.module.category.entity.CategoryEntity;
 
 public interface CategoryDao {
-	List<Category> selectList();
+	List<CategoryEntity> selectList();
 
-	Category select(int CategoryNo);
+	CategoryEntity select(int CategoryNo);
 
-	Category select(String categoryId);
+	CategoryEntity select(String categoryId);
 	
-	void insert(Category category);
+	void insert(CategoryEntity category);
 	
-	void update(Category category);
+	void update(CategoryEntity category);
 	
 	void delete(int categoryNo);
 
 	void delete(String categoryId);
 
-	List<Category> selectListByParentNo(Integer categoryParentNo);
+	List<CategoryEntity> selectListByParentNo(Integer categoryParentNo);
 }

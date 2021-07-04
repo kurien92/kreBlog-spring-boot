@@ -19,7 +19,7 @@ import net.kurien.blog.exception.NotFoundDataException;
 import net.kurien.blog.exception.NotUsePrimaryKeyException;
 import net.kurien.blog.module.file.service.ServiceFileService;
 import net.kurien.blog.module.post.dao.PostDao;
-import net.kurien.blog.module.post.entity.Post;
+import net.kurien.blog.module.post.entity.PostEntity;
 import net.kurien.blog.module.post.service.PostService;
 
 @Service
@@ -34,17 +34,17 @@ public class BasicPostService implements PostService, Searchable, SitemapCreatab
 	}
 
 	@Override
-	public List<Post> getList(String manageYn) {
+	public List<PostEntity> getList(String manageYn) {
 		return postDao.selectList(manageYn);
 	}
 	
 	@Override
-	public List<Post> getList(String manageYn, SearchCriteria criteria) {
+	public List<PostEntity> getList(String manageYn, SearchCriteria criteria) {
 		return postDao.selectList(manageYn, criteria);
 	}
 
 	@Override
-	public List<Post> getListByCategoryIds(List<String> categoryIds, String manageYn, SearchCriteria criteria) {
+	public List<PostEntity> getListByCategoryIds(List<String> categoryIds, String manageYn, SearchCriteria criteria) {
 		return postDao.selectListByCategoryIds(categoryIds, manageYn, criteria);
 	}
 	
@@ -64,7 +64,7 @@ public class BasicPostService implements PostService, Searchable, SitemapCreatab
 	}
 	
 	@Override
-	public Post get(int postNo, String manageYn) throws Exception {
+	public PostEntity get(int postNo, String manageYn) throws Exception {
 		if(!isExist(postNo, manageYn)) {
 			throw new NotFoundDataException(postNo + "번 포스트를 찾을 수 없습니다.");
 		}
@@ -73,7 +73,7 @@ public class BasicPostService implements PostService, Searchable, SitemapCreatab
 	}
 
 	@Override
-	public void write(Post post, Integer[] fileNos) throws Exception {
+	public void write(PostEntity post, Integer[] fileNos) throws Exception {
 		if(post.getPostNo() != null) {
 			if(post.getPostNo() == 0) {
 				throw new NotUsePrimaryKeyException("작성될 포스트의 번호가 잘못 입력되었습니다.");
@@ -92,7 +92,7 @@ public class BasicPostService implements PostService, Searchable, SitemapCreatab
 	}
 
 	@Override
-	public void modify(Post post, Integer[] fileNos) throws Exception {
+	public void modify(PostEntity post, Integer[] fileNos) throws Exception {
 		if(post.getPostNo() == null || post.getPostNo() == 0) {
 			throw new NotUsePrimaryKeyException("수정될 포스트의 번호가 입력되지 않았습니다.");
 		}
@@ -142,7 +142,7 @@ public class BasicPostService implements PostService, Searchable, SitemapCreatab
 		return postDao.removeCategoryId(categoryId);
 	}
 
-	private void addServiceFiles(Post post, Integer[] fileNos) {
+	private void addServiceFiles(PostEntity post, Integer[] fileNos) {
 		if(fileNos != null) {
 			serviceFileService.addFiles("post", post.getPostNo(), fileNos, post.getPostWriteIp());
 		}
@@ -170,9 +170,9 @@ public class BasicPostService implements PostService, Searchable, SitemapCreatab
 		List<Map<String, Object>> contents = new ArrayList<>();
 		SearchDto searchDto = new SearchDto();
 
-		List<Post> posts = postDao.search(queries);
+		List<PostEntity> posts = postDao.search(queries);
 
-		for(Post post : posts) {
+		for(PostEntity post : posts) {
 			Map<String, Object> content = new LinkedHashMap<>();
 
 			content.put("id", post.getPostNo());
@@ -193,9 +193,9 @@ public class BasicPostService implements PostService, Searchable, SitemapCreatab
 	public List<SitemapDto> sitemap(String siteUrl) {
 		List<SitemapDto> sitemapDtos = new ArrayList<>();
 
-		List<Post> posts = postDao.selectList("N");
+		List<PostEntity> posts = postDao.selectList("N");
 
-		for(Post post : posts) {
+		for(PostEntity post : posts) {
 			SitemapDto sitemapDto = new SitemapDto();
 
 			sitemapDto.setLoc(siteUrl + "/post/view/" + post.getPostNo());

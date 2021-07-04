@@ -1,6 +1,8 @@
 package net.kurien.blog.module.category.entity;
 
-public class Category {
+import net.kurien.blog.entity.Category;
+
+public class CategoryEntity {
 	private Integer categoryNo;
 	private Integer categoryParentNo;
 	private Integer categoryDepth;
@@ -44,7 +46,22 @@ public class Category {
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
-	
+
+	public static CategoryEntity from(Category category) {
+		CategoryEntity ce = new CategoryEntity();
+
+		ce.setCategoryNo(category.getCategoryId().intValue());
+		ce.setCategoryDepth(category.getCategoryDepth().intValue());
+		ce.setCategoryName(category.getCategoryName());
+		ce.setCategoryOrder(category.getCategoryOrder().intValue());
+		ce.setCategoryId(category.getCategoryKey());
+		if(category.getCategoryParent() != null) {
+			ce.setCategoryParentNo(category.getCategoryParent().getCategoryId().intValue());
+		}
+
+		return ce;
+	}
+
 	@Override
 	public String toString() {
 		return "Category [categoryNo=" + categoryNo + ", categoryParentNo=" + categoryParentNo + ", categoryDepth="

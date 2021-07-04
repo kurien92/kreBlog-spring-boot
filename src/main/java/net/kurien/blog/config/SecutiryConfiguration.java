@@ -31,7 +31,9 @@ public class SecutiryConfiguration extends WebSecurityConfigurerAdapter {
                     "/img/**",
                     "/.well-known/**",
                     "/robots.txt",
-                    "/ads.txt");
+                    "/ads.txt",
+                    "/rss",
+                    "/sitemap");
     }
 
     @Override

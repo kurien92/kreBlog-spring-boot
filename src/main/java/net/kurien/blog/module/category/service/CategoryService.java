@@ -2,24 +2,25 @@ package net.kurien.blog.module.category.service;
 
 import java.util.List;
 
-import net.kurien.blog.module.category.entity.Category;
+import net.kurien.blog.entity.Category;
+import net.kurien.blog.module.category.entity.CategoryEntity;
 
 public interface CategoryService {
-	List<Category> getList();
+	List<CategoryEntity> getList();
 	
-	Category get(int categoryNo);
+	CategoryEntity get(int categoryNo);
 	
 	Category get(String categoryId);
 	
-	void create(Category category);
+	void create(CategoryEntity category);
 	
-	void modify(Category category);
+	void modify(CategoryEntity category);
 	
 	void remove(int categoryNo);
 	
 	void remove(String categoryId);
 
-	List<Category> getCategoryAndChilds(String categoryId);
+	List<CategoryEntity> getCategoryAndChilds(String categoryId);
 
 	String getCategoryHTML(String contextPath);
 }

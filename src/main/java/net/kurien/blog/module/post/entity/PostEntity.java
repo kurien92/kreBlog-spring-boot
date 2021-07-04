@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class Post {
+public class PostEntity {
 	private Integer postNo;
 	private String categoryId;
 	private String postAuthor;

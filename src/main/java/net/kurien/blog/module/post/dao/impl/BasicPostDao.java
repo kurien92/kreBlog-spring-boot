@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import net.kurien.blog.module.post.dao.PostDao;
-import net.kurien.blog.module.post.entity.Post;
+import net.kurien.blog.module.post.entity.PostEntity;
 
 @Repository
 public class BasicPostDao implements PostDao {
@@ -23,7 +23,7 @@ public class BasicPostDao implements PostDao {
 	}
 	
 	@Override
-	public List<Post> selectList(String manageYn, SearchCriteria criteria) {
+	public List<PostEntity> selectList(String manageYn, SearchCriteria criteria) {
 		Map<String, Object> param = new HashMap<>();
 		param.put("manageYn", manageYn);
 		param.put("criteria", criteria);
@@ -32,7 +32,7 @@ public class BasicPostDao implements PostDao {
 	}
 
 	@Override
-	public List<Post> selectListByCategoryIds(List<String> categoryIds, String manageYn, SearchCriteria criteria) {
+	public List<PostEntity> selectListByCategoryIds(List<String> categoryIds, String manageYn, SearchCriteria criteria) {
 		Map<String, Object> param = new HashMap<>();
 		param.put("categoryIds", categoryIds);
 		param.put("manageYn", manageYn);
@@ -42,7 +42,7 @@ public class BasicPostDao implements PostDao {
 	}
 
 	@Override
-	public List<Post> selectList(String manageYn) {
+	public List<PostEntity> selectList(String manageYn) {
 		Map<String, Object> param = new HashMap<>();
 		param.put("manageYn", manageYn);
 		
@@ -58,7 +58,7 @@ public class BasicPostDao implements PostDao {
 	}
 	
 	@Override
-	public Post selectOne(int postNo, String manageYn) {
+	public PostEntity selectOne(int postNo, String manageYn) {
 		Map<String, Object> param = new HashMap<>();
 		param.put("postNo", postNo);
 		param.put("manageYn", manageYn);
@@ -67,12 +67,12 @@ public class BasicPostDao implements PostDao {
 	}
 
 	@Override
-	public void insert(Post post) {
+	public void insert(PostEntity post) {
 		sqlSession.insert(mapper + ".insert", post);
 	}
 
 	@Override
-	public void update(Post post) {
+	public void update(PostEntity post) {
 		sqlSession.update(mapper + ".update", post);
 	}
 
@@ -126,7 +126,7 @@ public class BasicPostDao implements PostDao {
 	}
 
 	@Override
-	public List<Post> search(String[] queries) {
+	public List<PostEntity> search(String[] queries) {
 		String[] searchColumns = new String[]{"postSubject", "postContent"};
 
 		Map<String, Object> param = new HashMap<>();

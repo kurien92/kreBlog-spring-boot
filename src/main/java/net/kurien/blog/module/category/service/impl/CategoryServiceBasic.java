@@ -3,43 +3,42 @@ package net.kurien.blog.module.category.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+import net.kurien.blog.entity.Category;
+import net.kurien.blog.module.category.repository.CategoryRepository;
 import net.kurien.blog.module.sitemap.SitemapCreatable;
 import net.kurien.blog.module.sitemap.SitemapDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.kurien.blog.module.category.dao.CategoryDao;
-import net.kurien.blog.module.category.entity.Category;
+import net.kurien.blog.module.category.entity.CategoryEntity;
 import net.kurien.blog.module.category.service.CategoryService;
 import net.kurien.blog.module.post.service.PostService;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceBasic implements CategoryService, SitemapCreatable {
 	private final CategoryDao categoryDao;
 	private final PostService postService;
+	private final CategoryRepository categoryRepository;
 
-	@Autowired
-	public CategoryServiceBasic(CategoryDao categoryDao, PostService postService) {
-		this.categoryDao = categoryDao;
-		this.postService = postService;
-	}
-
-	public List<Category> getList() {
+	public List<CategoryEntity> getList() {
 		return categoryDao.selectList();
 	}
 	
-	public Category get(int categoryNo) {
+	public CategoryEntity get(int categoryNo) {
 		return categoryDao.select(categoryNo);
 	}
 	
 	public Category get(String categoryId) {
-		return categoryDao.select(categoryId);
+		return categoryRepository.findByCategoryKey(categoryId);
 	}
 	
-	public List<Category> getCategoryAndChilds(String categoryId) {
-		List<Category> categories = new ArrayList<Category>();
+	public List<CategoryEntity> getCategoryAndChilds(String categoryId) {
+		List<CategoryEntity> categories = new ArrayList<CategoryEntity>();
 		
-		Category parentCategory = categoryDao.select(categoryId);
+		CategoryEntity parentCategory = categoryDao.select(categoryId);
 		
 		if(parentCategory == null) {
 			return null;
@@ -47,21 +46,21 @@ public class CategoryServiceBasic implements CategoryService, SitemapCreatable {
 		
 		categories.add(parentCategory);
 		
-		List<Category> childCategories = categoryDao.selectListByParentNo(parentCategory.getCategoryNo());
+		List<CategoryEntity> childCategories = categoryDao.selectListByParentNo(parentCategory.getCategoryNo());
 		
 		categories.addAll(childCategories);
 		
 		return categories;
 	}
 	
-	public void create(Category category) {
+	public void create(CategoryEntity category) {
 		int categoryDepth = createCategoryDepth(category.getCategoryParentNo());
 		category.setCategoryDepth(categoryDepth);
 		
 		categoryDao.insert(category);
 	}
 	
-	public void modify(Category category) {
+	public void modify(CategoryEntity category) {
 		int categoryDepth = createCategoryDepth(category.getCategoryParentNo());
 		category.setCategoryDepth(categoryDepth);
 		
@@ -94,7 +93,7 @@ public class CategoryServiceBasic implements CategoryService, SitemapCreatable {
 		return html;
 	}
 	
-	private String createCategoryHTML(List<Category> categoryList, String contextPath, int depth) {
+	private String createCategoryHTML(List<CategoryEntity> categoryList, String contextPath, int depth) {
 		String html = "";
 		
 		if(depth == 1) {
@@ -107,7 +106,7 @@ public class CategoryServiceBasic implements CategoryService, SitemapCreatable {
 		
 		html += "<ul class=\"category_list category_depth_" + depth++ + "\">";
 		
-		for(Category category : categoryList) {
+		for(CategoryEntity category : categoryList) {
 			int postCount = postService.getCountByCategoryId(category.getCategoryId(), "N");
 			
 			html += "<li>";
@@ -115,7 +114,7 @@ public class CategoryServiceBasic implements CategoryService, SitemapCreatable {
 					"arrow_right\r\n" + 
 					"</span>" + category.getCategoryName() + " <span class=\"category_post_count\">(" + postCount + ")</span></a>";
 			
-			List<Category> childCategoryList = categoryDao.selectListByParentNo(category.getCategoryNo());
+			List<CategoryEntity> childCategoryList = categoryDao.selectListByParentNo(category.getCategoryNo());
 			html += this.createCategoryHTML(childCategoryList, contextPath, depth);
 			
 			html += "</li>";
@@ -130,7 +129,7 @@ public class CategoryServiceBasic implements CategoryService, SitemapCreatable {
 		Integer categoryDepth = 0;
 		
 		if(parentCategryNo != null) {
-			Category parentCategory = categoryDao.select(parentCategryNo);
+			CategoryEntity parentCategory = categoryDao.select(parentCategryNo);
 			categoryDepth = parentCategory.getCategoryDepth() + 1;
 		}
 		
@@ -141,9 +140,9 @@ public class CategoryServiceBasic implements CategoryService, SitemapCreatable {
 	public List<SitemapDto> sitemap(String siteUrl) {
 		List<SitemapDto> sitemapDtos = new ArrayList<>();
 
-		List<Category> categories = categoryDao.selectList();
+		List<CategoryEntity> categories = categoryDao.selectList();
 
-		for(Category category : categories) {
+		for(CategoryEntity category : categories) {
 			SitemapDto sitemapDto = new SitemapDto();
 
 			sitemapDto.setLoc(siteUrl + "/category/" + category.getCategoryId());

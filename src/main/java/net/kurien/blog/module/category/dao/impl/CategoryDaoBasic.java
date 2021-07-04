@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import net.kurien.blog.module.category.dao.CategoryDao;
-import net.kurien.blog.module.category.entity.Category;
+import net.kurien.blog.module.category.entity.CategoryEntity;
 
 @Repository
 public class CategoryDaoBasic implements CategoryDao {
@@ -22,12 +22,12 @@ public class CategoryDaoBasic implements CategoryDao {
 	}
 
 	@Override
-	public List<Category> selectList() {
+	public List<CategoryEntity> selectList() {
 		return sqlSession.selectList(mapper + ".selectList");
 	}
 
 	@Override
-	public List<Category> selectListByParentNo(Integer categoryParentNo) {
+	public List<CategoryEntity> selectListByParentNo(Integer categoryParentNo) {
 		// Integer를 파라미터로 사용하는 경우에는 Mapper에서 변수명을 value로 사용해야한다.
 		// value로 사용하는 경우 가독성이 떨어질 것으로 생각되어 Map에 추가하여 파라미터 이름을 지정.
 		Map<String, Object> param = new HashMap<>();
@@ -37,22 +37,22 @@ public class CategoryDaoBasic implements CategoryDao {
 	}
 	
 	@Override
-	public Category select(int categoryNo) {
+	public CategoryEntity select(int categoryNo) {
 		return sqlSession.selectOne(mapper + ".selectOneByNo", categoryNo);
 	}
 	
 	@Override
-	public Category select(String categoryId) {
+	public CategoryEntity select(String categoryId) {
 		return sqlSession.selectOne(mapper + ".selectOneById", categoryId);
 	}
 	
 	@Override
-	public void insert(Category category) {
+	public void insert(CategoryEntity category) {
 		sqlSession.insert(mapper + ".insert", category);
 	}
 
 	@Override
-	public void update(Category category) {
+	public void update(CategoryEntity category) {
 		sqlSession.update(mapper + ".update", category);
 	}
 

@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
 
 @Slf4j
@@ -32,7 +31,7 @@ public class AccountController {
     private final Template template;
 
     @RequestMapping(value="/account/signup", method = RequestMethod.GET)
-    public String signup(HttpServletRequest request, HttpServletResponse response, Model model) throws NoSuchAlgorithmException {
+    public String signup(HttpServletRequest request, Model model) throws NoSuchAlgorithmException {
         template.setSubTitle("Sign up");
         template.getCss().add("<link rel=\"stylesheet\" href=\"/css/module/account.css\">");
 
@@ -42,7 +41,7 @@ public class AccountController {
     }
 
     @RequestMapping(value="/account/find", method = RequestMethod.GET)
-    public String find(HttpServletRequest request, HttpServletResponse response, Model model) throws NoSuchAlgorithmException {
+    public String find(HttpServletRequest request, Model model) throws NoSuchAlgorithmException {
         template.setSubTitle("Find");
         template.getCss().add("<link rel=\"stylesheet\" href=\"/css/module/account.css\">");
 
@@ -53,7 +52,7 @@ public class AccountController {
 
     @ResponseBody
     @RequestMapping(value="/account/findCheck", method = RequestMethod.POST)
-    public JsonObject findCheck(String token, AccountDto accountDto, Model model, HttpServletRequest request) {
+    public JsonObject findCheck(String token, AccountDto accountDto, HttpServletRequest request) {
         /**
          * 세션에 입력된 메일과 등록하려는 메일주소가 같은지 확인.
          * 인증이 되었는지 확인

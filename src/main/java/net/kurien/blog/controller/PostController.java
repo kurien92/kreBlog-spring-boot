@@ -3,15 +3,12 @@ package net.kurien.blog.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.kurien.blog.common.security.CurrentUser;
 import net.kurien.blog.common.security.domain.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import net.kurien.blog.entity.Category;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import net.kurien.blog.common.template.Template;
 import net.kurien.blog.domain.PageMaker;
 import net.kurien.blog.domain.SearchCriteria;
-import net.kurien.blog.module.category.entity.Category;
+import net.kurien.blog.module.category.entity.CategoryEntity;
 import net.kurien.blog.module.category.service.CategoryService;
-import net.kurien.blog.module.post.entity.Post;
+import net.kurien.blog.module.post.entity.PostEntity;
 import net.kurien.blog.module.post.service.PostService;
 import net.kurien.blog.module.shortUrl.entity.ServiceShortUrl;
 import net.kurien.blog.module.shortUrl.entity.ShortUrl;
@@ -50,11 +47,11 @@ public class PostController {
 	 * @return
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String list(SearchCriteria criteria, HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String list(SearchCriteria criteria, HttpServletRequest request, Model model) {
 		int totalRowCount = postService.getCount("N");
 		PageMaker pageMaker = new PageMaker(criteria, totalRowCount);
 		
-		List<Post> posts = postService.getList("N", criteria);
+		List<PostEntity> posts = postService.getList("N", criteria);
 
 		model.addAttribute("pageUrl", request.getContextPath() + "/post/list");
 		model.addAttribute("pageMaker", pageMaker);
@@ -77,7 +74,7 @@ public class PostController {
 	 */
 	@RequestMapping(value = "/view/{postNo}", method = RequestMethod.GET)
 	public String view(@PathVariable int postNo, Model model, @CurrentUser User user) throws Exception {
-		Post post = postService.get(postNo, "N");
+		PostEntity post = postService.get(postNo, "N");
 		Category category = categoryService.get(post.getCategoryId());
 
 		ShortUrl shortUrl = null;
@@ -88,7 +85,7 @@ public class PostController {
 		}
 		
 		model.addAttribute("post", post);
-		model.addAttribute("category", category);
+		model.addAttribute("category", CategoryEntity.from(category));
 		model.addAttribute("shortUrl", shortUrl);
 		model.addAttribute("user", user);
 

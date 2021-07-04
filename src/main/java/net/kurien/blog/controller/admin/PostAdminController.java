@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.JsonObject;
 import net.kurien.blog.domain.PageMaker;
 import net.kurien.blog.domain.SearchCriteria;
+import net.kurien.blog.entity.Category;
 import net.kurien.blog.exception.NotFoundDataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import net.kurien.blog.common.template.Template;
-import net.kurien.blog.module.category.entity.Category;
+import net.kurien.blog.module.category.entity.CategoryEntity;
 import net.kurien.blog.module.category.service.CategoryService;
 import net.kurien.blog.module.file.entity.File;
 import net.kurien.blog.module.file.entity.ServiceFile;
 import net.kurien.blog.module.file.service.FileService;
 import net.kurien.blog.module.file.service.ServiceFileService;
-import net.kurien.blog.module.post.entity.Post;
+import net.kurien.blog.module.post.entity.PostEntity;
 import net.kurien.blog.module.post.entity.PostPublishStatus;
 import net.kurien.blog.module.post.entity.PostViewStatus;
 import net.kurien.blog.module.post.service.PostService;
@@ -74,7 +75,7 @@ public class PostAdminController {
 		int totalRowCount = postService.getCount("Y");
 		PageMaker pageMaker = new PageMaker(criteria, totalRowCount);
 
-		List<Post> posts = postService.getList("Y", criteria);
+		List<PostEntity> posts = postService.getList("Y", criteria);
 
 		model.addAttribute("pageUrl", request.getContextPath() + "/admin/post/list");
 		model.addAttribute("pageMaker", pageMaker);
@@ -94,7 +95,7 @@ public class PostAdminController {
 	 */
 	@RequestMapping(value = "/write", method = RequestMethod.GET)
 	public String write(Model model) throws Exception {
-		List<Category> categories = categoryService.getList();
+		List<CategoryEntity> categories = categoryService.getList();
 		
 		model.addAttribute("categories", categories);
 		model.addAttribute("formAction", "writeUpdate");
@@ -114,7 +115,7 @@ public class PostAdminController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/writeUpdate", method = RequestMethod.POST)
-	public String writeUpdate(HttpServletRequest request, Post post, Integer[] fileNos) throws Exception {
+	public String writeUpdate(HttpServletRequest request, PostEntity post, Integer[] fileNos) throws Exception {
 		post.setPostAuthor("Kurien");
 		post.setPostWriteIp(RequestUtil.getRemoteAddr(request));
 
@@ -142,8 +143,8 @@ public class PostAdminController {
 		ShortUrl shortUrl = null;
 		List<File> files = null;
 		
-		Post post = postService.get(postNo, "Y");
-		List<Category> categories = categoryService.getList();
+		PostEntity post = postService.get(postNo, "Y");
+		List<CategoryEntity> categories = categoryService.getList();
 
 		String htmlEscapeContent = HtmlUtil.escapeHtml(post.getPostContent());
 		post.setPostContent(htmlEscapeContent);
@@ -189,7 +190,7 @@ public class PostAdminController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/modifyUpdate", method = RequestMethod.POST)
-	public String modify(Post post, Integer[] fileNos, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String modify(PostEntity post, Integer[] fileNos, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if(post.getPostView() == null) {
 			post.setPostView(PostViewStatus.FALSE);
 		}
@@ -222,7 +223,7 @@ public class PostAdminController {
 	
 	@RequestMapping(value = "/preview/{postNo}", method = RequestMethod.GET)
 	public String preview(@PathVariable int postNo, Model model) throws Exception {
-		Post post = postService.get(postNo, "Y");
+		PostEntity post = postService.get(postNo, "Y");
 		Category category = categoryService.get(post.getCategoryId());
 
 		ShortUrl shortUrl = null;
@@ -233,7 +234,7 @@ public class PostAdminController {
 		}
 
 		model.addAttribute("post", post);
-		model.addAttribute("category", category);
+		model.addAttribute("category", CategoryEntity.from(category));
 		model.addAttribute("shortUrl", shortUrl);
 
 		template.setSubTitle(post.getPostSubject());
@@ -274,7 +275,7 @@ public class PostAdminController {
 		return json;
 	}
 	
-	private void createShortUrl(HttpServletRequest request, Post post) {
+	private void createShortUrl(HttpServletRequest request, PostEntity post) {
 		String url = "https://" + request.getServerName() + request.getContextPath() + "/post/view/" + post.getPostNo();
 		
 		ShortUrl shortUrl = new ShortUrl();

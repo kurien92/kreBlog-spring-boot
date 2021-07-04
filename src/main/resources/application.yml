@@ -16,6 +16,10 @@ spring:
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB103Dialect
+
   datasource:
     hikari:
       connection-timeout: 5000
@@ -91,9 +95,13 @@ spring:
       on-profile: local
   jpa:
     show-sql: true
-    generate-ddl: true
+    generate-ddl: false
     hibernate:
       ddl-auto: none
+  datasource:
+    initialization-mode: always
+    hikari:
+      schema: classpath:/schema.sql
 
 jasypt:
   encryptor:
@@ -129,6 +137,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+  datasource:
+    initialization-mode: never
 
 jasypt:
   encryptor:

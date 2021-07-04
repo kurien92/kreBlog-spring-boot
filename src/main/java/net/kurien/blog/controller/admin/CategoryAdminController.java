@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.kurien.blog.entity.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import net.kurien.blog.common.template.Template;
-import net.kurien.blog.module.category.entity.Category;
+import net.kurien.blog.module.category.entity.CategoryEntity;
 import net.kurien.blog.module.category.service.CategoryService;
 
 @Controller
@@ -40,7 +41,7 @@ public class CategoryAdminController {
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(Model model) {
-		List<Category> categories = categoryService.getList();
+		List<CategoryEntity> categories = categoryService.getList();
 		model.addAttribute("categories", categories);
 		
 		template.setTitle("Category List &dash; Kurien's Blog");
@@ -57,7 +58,7 @@ public class CategoryAdminController {
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String write(Model model) throws Exception {
-		List<Category> categories = categoryService.getList();
+		List<CategoryEntity> categories = categoryService.getList();
 		
 		model.addAttribute("parentCategories", categories);
 		model.addAttribute("formAction", "addUpdate");
@@ -74,7 +75,7 @@ public class CategoryAdminController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/addUpdate", method = RequestMethod.POST)
-	public String writeUpdate(HttpServletRequest request, Category category) throws Exception {
+	public String writeUpdate(HttpServletRequest request, CategoryEntity category) throws Exception {
 		categoryService.create(category);
 
 		return "redirect:/admin/category/list";
@@ -91,9 +92,9 @@ public class CategoryAdminController {
 	@RequestMapping(value = "/modify/{categoryId}", method = RequestMethod.GET)
 	public String modify(@PathVariable String categoryId, Model model) throws Exception {
 		Category category = categoryService.get(categoryId);
-		List<Category> categories = categoryService.getList();
+		List<CategoryEntity> categories = categoryService.getList();
 
-		model.addAttribute("category", category);
+		model.addAttribute("category", CategoryEntity.from(category));
 		model.addAttribute("parentCategories", categories);
 		model.addAttribute("formAction", "modifyUpdate");
 		model.addAttribute("formSubmit", "수정");
@@ -109,7 +110,7 @@ public class CategoryAdminController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/modifyUpdate", method = RequestMethod.POST)
-	public String modify(Category category) throws Exception {
+	public String modify(CategoryEntity category) throws Exception {
 		categoryService.modify(category);
 		
 		return "redirect:/admin/category/list";

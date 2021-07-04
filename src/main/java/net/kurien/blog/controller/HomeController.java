@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import net.kurien.blog.common.template.Template;
 import net.kurien.blog.domain.PageMaker;
 import net.kurien.blog.domain.SearchCriteria;
-import net.kurien.blog.module.post.entity.Post;
+import net.kurien.blog.module.post.entity.PostEntity;
 import net.kurien.blog.module.post.service.PostService;
 
 /**
@@ -51,7 +51,7 @@ public class HomeController {
 		int totalRowCount = postService.getCount("N");
 		PageMaker pageMaker = new PageMaker(criteria, totalRowCount);
 		
-		List<Post> posts = postService.getList("N", criteria);
+		List<PostEntity> posts = postService.getList("N", criteria);
 
 		model.addAttribute("pageMaker", pageMaker);
 		model.addAttribute("pageUrl", request.getContextPath() + "/");
@@ -67,7 +67,7 @@ public class HomeController {
 	public @ResponseBody String rss(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		SearchCriteria criteria = new SearchCriteria(1, 500);
 		
-		List<Post> posts = postService.getList("N", criteria);
+		List<PostEntity> posts = postService.getList("N", criteria);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
 		

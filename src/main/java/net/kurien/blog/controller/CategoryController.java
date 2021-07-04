@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.kurien.blog.entity.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,9 @@ import net.kurien.blog.common.template.Template;
 import net.kurien.blog.domain.PageMaker;
 import net.kurien.blog.domain.SearchCriteria;
 import net.kurien.blog.exception.NotFoundDataException;
-import net.kurien.blog.module.category.entity.Category;
+import net.kurien.blog.module.category.entity.CategoryEntity;
 import net.kurien.blog.module.category.service.CategoryService;
-import net.kurien.blog.module.post.entity.Post;
+import net.kurien.blog.module.post.entity.PostEntity;
 import net.kurien.blog.module.post.service.PostService;
 
 @Controller
@@ -47,13 +48,13 @@ public class CategoryController {
 			throw new NotFoundDataException("존재하지 않는 카테고리입니다.");
 		}
 		
-		int totalRowCount = postService.getCountByCategoryId(category.getCategoryId(), "N");
+		int totalRowCount = postService.getCountByCategoryId(category.getCategoryKey(), "N");
 		PageMaker pageMaker = new PageMaker(criteria, totalRowCount);
 		
 		List<String> categories = new ArrayList<>();
-		categories.add(category.getCategoryId());
+		categories.add(category.getCategoryKey());
 		
-		List<Post> posts = postService.getListByCategoryIds(categories, "N", criteria);
+		List<PostEntity> posts = postService.getListByCategoryIds(categories, "N", criteria);
 
 		model.addAttribute("pageUrl", request.getContextPath() + "/category/" + categoryId);
 		model.addAttribute("pageMaker", pageMaker);
