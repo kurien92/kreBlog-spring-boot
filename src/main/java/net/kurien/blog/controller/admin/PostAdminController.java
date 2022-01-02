@@ -10,10 +10,12 @@ import com.google.gson.JsonObject;
 import net.kurien.blog.domain.PageMaker;
 import net.kurien.blog.domain.SearchCriteria;
 import net.kurien.blog.entity.Category;
+import net.kurien.blog.entity.Post;
 import net.kurien.blog.exception.NotFoundDataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,11 +77,11 @@ public class PostAdminController {
 		int totalRowCount = postService.getCount("Y");
 		PageMaker pageMaker = new PageMaker(criteria, totalRowCount);
 
-		List<PostEntity> posts = postService.getList("Y", criteria);
+		Page<Post> posts = postService.getList("Y", criteria);
 
 		model.addAttribute("pageUrl", request.getContextPath() + "/admin/post/list");
 		model.addAttribute("pageMaker", pageMaker);
-		model.addAttribute("posts", posts);
+		model.addAttribute("posts", posts.toList());
 
 		template.setTitle("Post List &dash; Kurien's Blog");
 		template.getCss().add("<link rel=\"stylesheet\" href=\"/css/module/post.css\">");

@@ -12,10 +12,10 @@
 			<div class="kre_article_info">
 				<ul>
 					<li><strong>Author</strong> ${post.postAuthor}</li>
-					<c:if test="${post.categoryId != null}">
+					<c:if test="${category != null}">
 						<li>
 							<strong>Category</strong>
-							<a href="${contextPath}/category/${post.categoryId}" class="kre_post_category">${category.categoryName}</a>
+							<a href="${contextPath}/category/${category.categoryId}" class="kre_post_category">${category.categoryName}</a>
 						</li>
 					</c:if>
 					<li><strong>Registration Time</strong> <fmt:formatDate value="${post.postWriteTime}" pattern="yyyy/MM/dd HH:mm" /></li>

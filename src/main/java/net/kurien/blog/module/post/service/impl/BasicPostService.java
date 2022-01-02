@@ -4,13 +4,21 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.RequiredArgsConstructor;
 import net.kurien.blog.domain.SearchCriteria;
+import net.kurien.blog.entity.Post;
+import net.kurien.blog.module.post.repository.PostRepository;
+import net.kurien.blog.module.post.repository.PostSpecs;
 import net.kurien.blog.module.search.dto.SearchDto;
 import net.kurien.blog.module.search.dto.Searchable;
 import net.kurien.blog.module.sitemap.SitemapCreatable;
 import net.kurien.blog.module.sitemap.SitemapDto;
 import net.kurien.blog.util.TimeUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import net.kurien.blog.exception.DuplicatedDataException;
@@ -23,15 +31,11 @@ import net.kurien.blog.module.post.entity.PostEntity;
 import net.kurien.blog.module.post.service.PostService;
 
 @Service
+@RequiredArgsConstructor
 public class BasicPostService implements PostService, Searchable, SitemapCreatable {
 	private final PostDao postDao;
+	private final PostRepository postRepository;
 	private final ServiceFileService serviceFileService;
-
-	@Autowired
-	public BasicPostService(PostDao postDao, ServiceFileService serviceFileService) {
-		this.postDao = postDao;
-		this.serviceFileService = serviceFileService;
-	}
 
 	@Override
 	public List<PostEntity> getList(String manageYn) {
@@ -39,8 +43,25 @@ public class BasicPostService implements PostService, Searchable, SitemapCreatab
 	}
 	
 	@Override
-	public List<PostEntity> getList(String manageYn, SearchCriteria criteria) {
-		return postDao.selectList(manageYn, criteria);
+	public Page<Post> getList(String manageYn, SearchCriteria criteria) {
+		Sort sorts = Sort.by("postWriteTime").descending().and(Sort.by("postNo").descending());
+
+		Pageable pageable = PageRequest.of(criteria.getPage() - 1, criteria.getRowCount(), sorts);
+
+		Specification<Post> specification = Specification.where(PostSpecs.isManage(manageYn));
+
+		if(criteria.getSearchType() != null) {
+			if(criteria.getSearchType().equals("category")) {
+				specification.and(PostSpecs.withCategory(criteria.getKeyword()));
+			} else if (criteria.getSearchType().equals("subject")) {
+				specification.and(PostSpecs.likeSubject(criteria.getKeyword()));
+			} else if (criteria.getSearchType().equals("author")) {
+				specification.and(PostSpecs.likeAuthor(criteria.getKeyword()));
+			}
+		}
+
+
+		return postRepository.findAll(specification, pageable);
 	}
 
 	@Override

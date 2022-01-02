@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import net.kurien.blog.module.file.dto.FileDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,13 +17,9 @@ import net.kurien.blog.module.file.service.FileService;
 import net.kurien.blog.util.FileUtil;
 
 @Service
+@RequiredArgsConstructor
 public class BasicFileService implements FileService {
 	private final FileDao fileDao;
-
-	@Autowired
-	public BasicFileService(FileDao fileDao) {
-		this.fileDao = fileDao;
-	}
 
 	@Override
 	public FileDTO upload(String uploadPath, String serviceName, FileDTO fileDto, String uploadIp) throws NoSuchAlgorithmException, IOException {

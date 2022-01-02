@@ -1,5 +1,6 @@
 package net.kurien.blog.module.content.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import net.kurien.blog.domain.SearchCriteria;
 import net.kurien.blog.exception.DuplicatedDataException;
 import net.kurien.blog.exception.NotFoundDataException;
@@ -20,15 +21,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@RequiredArgsConstructor
 public class BasicContentService implements ContentService, Searchable, SitemapCreatable {
     private final ContentDao contentDao;
     private final ServiceFileService serviceFileService;
-
-    @Autowired
-    public BasicContentService(ContentDao contentDao, ServiceFileService serviceFileService) {
-        this.contentDao = contentDao;
-        this.serviceFileService = serviceFileService;
-    }
 
     @Override
     public Content get(String contentId, String manageYn) throws NotFoundDataException {

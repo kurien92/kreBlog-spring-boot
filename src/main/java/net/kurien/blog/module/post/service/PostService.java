@@ -3,11 +3,13 @@ package net.kurien.blog.module.post.service;
 import java.util.List;
 
 import net.kurien.blog.domain.SearchCriteria;
+import net.kurien.blog.entity.Post;
 import net.kurien.blog.module.post.entity.PostEntity;
+import org.springframework.data.domain.Page;
 
 public interface PostService {
 	List<PostEntity> getList(String manageYn);
-	List<PostEntity> getList(String manageYn, SearchCriteria criteria);
+	Page<Post> getList(String manageYn, SearchCriteria criteria);
 	
 	PostEntity get(int postNo, String manageYn) throws Exception;
 	

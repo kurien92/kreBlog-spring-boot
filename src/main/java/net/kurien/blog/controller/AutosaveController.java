@@ -2,6 +2,7 @@ package net.kurien.blog.controller;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import lombok.RequiredArgsConstructor;
 import net.kurien.blog.common.security.CurrentUser;
 import net.kurien.blog.common.security.domain.User;
 import net.kurien.blog.module.autosave.entity.Autosave;
@@ -10,7 +11,6 @@ import net.kurien.blog.module.autosave.service.AutosaveService;
 import net.kurien.blog.module.autosave.service.ServiceAutosaveService;
 import net.kurien.blog.util.RequestUtil;
 import net.kurien.blog.util.TimeUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,15 +21,10 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/autosave")
+@RequiredArgsConstructor
 public class AutosaveController {
     private final AutosaveService autosaveService;
     private final ServiceAutosaveService serviceAutosaveService;
-
-    @Autowired
-    public AutosaveController(AutosaveService autosaveService, ServiceAutosaveService serviceAutosaveService) {
-        this.autosaveService = autosaveService;
-        this.serviceAutosaveService = serviceAutosaveService;
-    }
 
     @RequestMapping("/save/{serviceName}")
     public JsonObject save(@PathVariable String serviceName,

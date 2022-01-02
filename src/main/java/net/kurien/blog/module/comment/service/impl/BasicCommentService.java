@@ -2,6 +2,7 @@ package net.kurien.blog.module.comment.service.impl;
 
 import java.util.*;
 
+import lombok.RequiredArgsConstructor;
 import net.kurien.blog.module.search.dto.SearchDto;
 import net.kurien.blog.module.search.dto.Searchable;
 import net.kurien.blog.util.EncryptionUtil;
@@ -14,13 +15,9 @@ import net.kurien.blog.module.comment.entity.Comment;
 import net.kurien.blog.module.comment.service.CommentService;
 
 @Service
+@RequiredArgsConstructor
 public class BasicCommentService implements CommentService, Searchable {
 	private final CommentDao commentDao;
-
-	@Autowired
-	public BasicCommentService(CommentDao commentDao) {
-		this.commentDao = commentDao;
-	}
 
 	@Override
 	public List<Comment> getList() {

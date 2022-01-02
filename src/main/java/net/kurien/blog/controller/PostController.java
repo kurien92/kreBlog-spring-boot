@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.kurien.blog.common.security.CurrentUser;
 import net.kurien.blog.common.security.domain.User;
 import net.kurien.blog.entity.Category;
+import net.kurien.blog.entity.Post;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,11 +53,11 @@ public class PostController {
 		int totalRowCount = postService.getCount("N");
 		PageMaker pageMaker = new PageMaker(criteria, totalRowCount);
 		
-		List<PostEntity> posts = postService.getList("N", criteria);
+		Page<Post> posts = postService.getList("N", criteria);
 
 		model.addAttribute("pageUrl", request.getContextPath() + "/post/list");
 		model.addAttribute("pageMaker", pageMaker);
-		model.addAttribute("posts", posts);
+		model.addAttribute("posts", posts.toList());
 
 		template.setTitle("Post list &dash; Kurien's Blog");
 		template.getCss().add("<link rel=\"stylesheet\" href=\"/css/module/post.css\">");

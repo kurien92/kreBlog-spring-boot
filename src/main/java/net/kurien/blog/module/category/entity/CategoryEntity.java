@@ -48,6 +48,10 @@ public class CategoryEntity {
 	}
 
 	public static CategoryEntity from(Category category) {
+		if(category == null) {
+			return null;
+		}
+
 		CategoryEntity ce = new CategoryEntity();
 
 		ce.setCategoryNo(category.getCategoryId().intValue());

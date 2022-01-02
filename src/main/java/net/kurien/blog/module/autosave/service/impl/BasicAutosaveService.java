@@ -1,5 +1,6 @@
 package net.kurien.blog.module.autosave.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import net.kurien.blog.module.autosave.dao.AutosaveDao;
 import net.kurien.blog.module.autosave.entity.Autosave;
 import net.kurien.blog.module.autosave.service.AutosaveService;
@@ -10,13 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BasicAutosaveService implements AutosaveService {
     private final AutosaveDao autosaveDao;
-
-    @Autowired
-    public BasicAutosaveService(AutosaveDao autosaveDao) {
-        this.autosaveDao = autosaveDao;
-    }
 
     @Override
     public Autosave get(Long asNo) {

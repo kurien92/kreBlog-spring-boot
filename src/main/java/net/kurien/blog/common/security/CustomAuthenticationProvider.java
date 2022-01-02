@@ -1,7 +1,7 @@
 package net.kurien.blog.common.security;
 
+import lombok.RequiredArgsConstructor;
 import net.kurien.blog.util.EncryptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,13 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 @Component("authenticationProvider")
+@RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
     private final UserDetailsService userDetailsService;
-
-    @Autowired
-    public CustomAuthenticationProvider(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

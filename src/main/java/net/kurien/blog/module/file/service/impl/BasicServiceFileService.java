@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import lombok.RequiredArgsConstructor;
 import net.kurien.blog.exception.NotFoundDataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,10 @@ import net.kurien.blog.module.file.service.FileService;
 import net.kurien.blog.module.file.service.ServiceFileService;
 
 @Service
+@RequiredArgsConstructor
 public class BasicServiceFileService implements ServiceFileService {
 	private final ServiceFileDao serviceFileDao;
 	private final FileService fileService;
-
-	@Autowired
-	public BasicServiceFileService(ServiceFileDao serviceFileDao, FileService fileService) {
-		this.serviceFileDao = serviceFileDao;
-		this.fileService = fileService;
-	}
 
 	@Override
 	public ServiceFile get(String serviceName, Integer serviceNo, Integer fileNo) {
