@@ -84,10 +84,14 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
 }
 
 test {
     useJUnitPlatform()
+}
+
+processResources {
+    duplicatesStrategy = 'include' // 중복 파일을 포함시킵니다.
 }

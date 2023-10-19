@@ -15,7 +15,7 @@
 	</resultMap>
 	
 	<sql id="table">
-		kreFile
+		file
 	</sql>
     
     <select id="selectList" resultMap="resultMap">

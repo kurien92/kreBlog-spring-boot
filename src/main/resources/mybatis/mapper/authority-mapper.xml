@@ -7,7 +7,7 @@
 	</resultMap>
 	
 	<sql id="table">
-		kreAuthority
+		authority
 	</sql>
     
     <select id="selectCount" resultType="Integer">

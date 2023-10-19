@@ -17,15 +17,15 @@
 	</resultMap>
 
 	<sql id="table">
-		kreComment
+		comment
 	</sql>
 
 	<sql id="tablePost">
-		krePost
+		post
 	</sql>
 
 	<sql id="tableAccount">
-		kreAccount
+		account
 	</sql>
 
 	<sql id="selectQuery">

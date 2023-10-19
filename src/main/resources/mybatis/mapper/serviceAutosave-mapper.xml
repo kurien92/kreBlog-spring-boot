@@ -11,7 +11,7 @@
 	</resultMap>
 	
 	<sql id="table">
-		kreServiceAutosave
+		service_autosave
 	</sql>
 
 	<insert id="insert">

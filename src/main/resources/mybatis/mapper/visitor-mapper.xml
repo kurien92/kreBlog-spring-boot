@@ -14,7 +14,7 @@
 	</resultMap>
 	
 	<sql id="table">
-		kreVisitor
+		visitor
 	</sql>
 	
 	<sql id="criteria">

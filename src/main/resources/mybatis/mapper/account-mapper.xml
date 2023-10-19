@@ -16,7 +16,7 @@
 	</resultMap>
 	
 	<sql id="table">
-		kreAccount
+		account
 	</sql>
 	
 	<sql id="criteria">

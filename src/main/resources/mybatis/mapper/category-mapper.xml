@@ -11,7 +11,7 @@
 	</resultMap>
 	
 	<sql id="table">
-		kreCategory
+		category
 	</sql>
 
     <select id="selectList" resultMap="resultMap">

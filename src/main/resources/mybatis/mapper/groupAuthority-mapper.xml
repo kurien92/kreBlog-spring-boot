@@ -15,15 +15,15 @@
     </sql>
 
     <sql id="tableGroups">
-        kreGroups
+        groups
     </sql>
 
     <sql id="tableGroupAccounts">
-        kreGroupAccounts
+        group_accounts
     </sql>
 
     <sql id="tableGroupAuthorities">
-        kreGroupAuthorities
+        group_authorities
     </sql>
 
     <select id="selectGroupAuthorities" resultMap="resultMap">

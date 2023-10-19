@@ -10,7 +10,7 @@
 	</resultMap>
 	
 	<sql id="table">
-		kreServiceFile
+		service_file
 	</sql>
 
 	<select id="selectOne" resultMap="resultMap">

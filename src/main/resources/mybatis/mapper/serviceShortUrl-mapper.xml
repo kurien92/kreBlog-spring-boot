@@ -10,7 +10,7 @@
 	</resultMap>
 	
 	<sql id="table">
-		kreServiceShortUrl
+		service_short_url
 	</sql>
 	
 	<select id="selectOne" resultMap="resultMap">

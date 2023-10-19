@@ -18,7 +18,7 @@
 	</resultMap>
 	
 	<sql id="table">
-		krePost
+		post
 	</sql>
 	
 	<sql id="manageYn">
