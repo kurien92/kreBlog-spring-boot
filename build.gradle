@@ -12,7 +12,7 @@ apply plugin: 'war'
 
 bootWar {
     archiveBaseName="blog"
-    archiveVersion="0.0.1-SNAPSHOT"
+    archiveVersion="1.0.0-SNAPSHOT"
 }
 
 repositories {
