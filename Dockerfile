@@ -1,5 +1,11 @@
-FROM --platform=linux/arm64/v8 tomcat:9.0.82-jdk17-corretto
+FROM --platform=linux/arm64/v8 openjdk:17-ea-slim-buster
 
-COPY ./build/libs/blog-1.0.0-SNAPSHOT.war /usr/local/tomcat/webapps/kreblog.war
+WORKDIR /home/app
+RUN mkdir files
+COPY build/libs/*.war app.war
+
+ARG ENVIRONMENT
+ENV SPRING_PROFILES_ACTIVE=${ENVIRONMENT}
 
 EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.war"]
