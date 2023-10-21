@@ -1,3 +1,7 @@
+value:
+  file:
+    path: /home/app/files
+
 server:
   port: 8080
 

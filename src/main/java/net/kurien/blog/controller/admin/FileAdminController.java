@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +32,9 @@ public class FileAdminController {
 	private static final Logger logger = LoggerFactory.getLogger(FileAdminController.class);
 
 	private final FileService fileService;
+
+	@Value("${value.file.path}")
+	private String filePath;
 
 	@Autowired
 	public FileAdminController(FileService fileService) {
@@ -61,7 +65,7 @@ public class FileAdminController {
 			return null;
 		}
 
-		String uploadPath = multiFile.getServletContext().getRealPath("/") + "../../files/" + service;
+		String uploadPath = filePath + java.io.File.separator + service;
 
 		FileDTO fileDto = new FileDTO();
 

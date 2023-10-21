@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,9 @@ import net.kurien.blog.util.FileUtil;
 public class FileController {
 	private final FileService fileService;
 
+	@Value("${value.file.path}")
+	private String filePath;
+
 	@Autowired
 	public FileController(FileService fileService) {
 		this.fileService = fileService;
@@ -32,10 +36,10 @@ public class FileController {
 		if(file == null) {
 			throw new NotFoundDataException("파일이 업로드 되지 않았거나 삭제되었습니다.");
 		}
-		
-		String uploadPath = request.getServletContext().getRealPath("/") + "../../files/" + service;
 
-		String filePath = uploadPath + java.io.File.separator + file.getFileStoredName();
+		String uploadPath = filePath + "/" + service;
+
+		String filePath = uploadPath + "/" + file.getFileStoredName();
 
 		FileUtil.view(filePath, response);
 	}
@@ -48,7 +52,7 @@ public class FileController {
 			throw new NotFoundDataException("파일이 업로드 되지 않았거나 삭제되었습니다.");
 		}
 
-		String uploadPath = request.getServletContext().getRealPath("/") + "../../files/" + service;
+		String uploadPath = filePath + java.io.File.separator + service;
 
 		String filePath = uploadPath + java.io.File.separator + file.getFileStoredName();
 
