@@ -110,6 +110,6 @@ public class PostController {
 
 	@RequestMapping(value = "/search/{postNo}")
 	public String search(@PathVariable int postNo, Model model) {
-		return "redirect: /post/view/" + postNo;
+		return "redirect:/post/view/" + postNo;
 	}
 }

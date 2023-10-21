@@ -43,6 +43,6 @@ public class ContentController {
 
     @RequestMapping(value = "/search/{contentId}")
     public String search(@PathVariable String contentId, Model model) {
-        return "redirect: /content/" + contentId;
+        return "redirect:/content/" + contentId;
     }
 }

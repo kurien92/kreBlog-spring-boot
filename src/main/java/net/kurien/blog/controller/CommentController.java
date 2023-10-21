@@ -45,7 +45,7 @@ public class CommentController {
 	public String search(@PathVariable int commentNo, Model model) {
 		Comment comment = commentService.get(commentNo);
 
-		return "redirect: /post/view/" + comment.getPostNo() + "#comment" + comment.getCommentNo();
+		return "redirect:/post/view/" + comment.getPostNo() + "#comment" + comment.getCommentNo();
 	}
 
 	@RequestMapping(value = "/list/{postNo}", method = RequestMethod.GET)
