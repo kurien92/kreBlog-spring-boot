@@ -8,6 +8,5 @@ ENV JAVA_XMS=256m
 ENV JAVA_XMX=512m
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.war"]
 
 ENTRYPOINT java -Xms${JAVA_XMS} -Xmx${JAVA_XMX} -jar -XX:+UseSerialGC -Djava.net.preferIPv4Stack=true -Dspring.profiles.active=prod app.jar
