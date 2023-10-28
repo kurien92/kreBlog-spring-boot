@@ -16,6 +16,8 @@ import org.jdom2.*;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +39,8 @@ public class HomeController {
 	private final ContentService contentService;
 	private final PostService postService;
 	private final CategoryService categoryService;
+	@Value("${value.host}")
+	private String host;
 
 	@Autowired
 	public HomeController(Template template, ContentService contentService, PostService postService, CategoryService categoryService) {
@@ -63,7 +67,7 @@ public class HomeController {
 		return "post/list";
 	}
 	
-	@RequestMapping(value = "/rss", method = RequestMethod.GET, produces="application/xml;charset=utf-8")
+	@RequestMapping(value = "/rss", method = RequestMethod.GET, produces="application/xml; charset=utf-8")
 	public @ResponseBody String rss(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		SearchCriteria criteria = new SearchCriteria(1, 500);
 		
@@ -78,13 +82,13 @@ public class HomeController {
 		root.addContent(channel);
 		
 		channel.addContent(new Element("title").addContent(new CDATA("Kurien's Blog")));
-		channel.addContent(new Element("link").setText("https://www.kurien.net/"));
+		channel.addContent(new Element("link").setText(host + "/"));
 		channel.addContent(new Element("description").addContent(new CDATA("Kurien's Blog는 프로그래밍과 개발 전반에 대한 내용을 다루는 블로그입니다.")));
 
 		for(int i = 0; i < posts.size(); i++) {
 			Element item = new Element("item");
 
-			String link = "https://www.kurien.net/post/view/" + posts.get(i).getPostNo();
+			String link = host + "/post/view/" + posts.get(i).getPostNo();
 			
 			item.addContent(new Element("title").addContent(new CDATA(posts.get(i).getPostSubject())));
 			item.addContent(new Element("link").setText(link));
@@ -103,7 +107,7 @@ public class HomeController {
 		f.setLineSeparator("\r\n");
 
 		XMLOutputter outputter = new XMLOutputter(f);
-		
+
 		return outputter.outputString(doc);
 	}
 
@@ -121,8 +125,6 @@ public class HomeController {
 		List<SitemapCreatable> sitemapCreatables = new ArrayList<>();
 		List<SitemapDto> sitemapDtos = new ArrayList<>();
 
-		String siteUrl = "https://www.kurien.net";
-
 		sitemapCreatables.add((SitemapCreatable) contentService);
 		sitemapCreatables.add((SitemapCreatable) postService);
 		sitemapCreatables.add((SitemapCreatable) categoryService);
@@ -134,7 +136,7 @@ public class HomeController {
 		Element root = new Element("urlset", nsSitemap);
 
 		for(SitemapCreatable sitemapCreatable : sitemapCreatables) {
-			sitemapDtos.addAll(sitemapCreatable.sitemap(siteUrl));
+			sitemapDtos.addAll(sitemapCreatable.sitemap(host));
 		}
 
 		for(SitemapDto sitemapDto : sitemapDtos) {

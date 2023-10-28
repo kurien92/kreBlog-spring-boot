@@ -143,7 +143,6 @@ public class CustomErrorController implements ErrorController {
 		return "error/exception";
 	}
 
-	@Override
 	public String getErrorPath() {
 		return null;
 	}

@@ -83,6 +83,9 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.11.4'
+
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'

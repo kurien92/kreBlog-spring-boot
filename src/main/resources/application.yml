@@ -1,4 +1,5 @@
 value:
+  host: "https://www.kurien.net"
   file:
     path: /home/app/files
 

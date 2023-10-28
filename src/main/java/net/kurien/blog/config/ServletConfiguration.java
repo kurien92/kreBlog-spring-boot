@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -25,11 +26,21 @@ public class ServletConfiguration implements WebMvcConfigurer {
     public ServletConfiguration(TemplateInterceptor templateInterceptor) {
         this.templateInterceptor = templateInterceptor;
     }
+    @Bean
+    public MappingJackson2XmlHttpMessageConverter mappingJackson2XmlHttpMessageConverter(){
+        MappingJackson2XmlHttpMessageConverter converter = new MappingJackson2XmlHttpMessageConverter();
+        converter.setPrettyPrint(true);
+        return converter;
+    }
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         GsonHttpMessageConverter gsonHttpMessageConverter = new GsonHttpMessageConverter();
+        MappingJackson2XmlHttpMessageConverter jacksonXmlMessageConverter = new MappingJackson2XmlHttpMessageConverter();
+        jacksonXmlMessageConverter.setPrettyPrint(true);
+
         converters.add(gsonHttpMessageConverter);
+        converters.add(jacksonXmlMessageConverter);
     }
 
     @Bean
