@@ -24,7 +24,7 @@
         <where>
 			fileNo IN
         	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-        		#{item.value}
+        		#{item}
         	</foreach>
         </where>
        	ORDER BY
@@ -95,7 +95,7 @@
         <where>
 			fileNo IN
         	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-        		#{item.value}
+        		#{item}
         	</foreach>
         </where>
     </delete>
