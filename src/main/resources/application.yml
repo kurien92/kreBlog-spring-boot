@@ -23,12 +23,12 @@ jasypt:
 
 db:
   driverClassName: org.mariadb.jdbc.Driver
-  jdbcUrl: jdbc:mariadb://db:3306/kreblog?useTimezone=true&amp;serverTimezone=Asia/Seoul&amp;useSSL=false
+  jdbcUrl: jdbc:mariadb://db-svc:3306/kreblog?useTimezone=true&amp;serverTimezone=Asia/Seoul&amp;useSSL=false
   username: kre
   password: ENC(FIiNzuzdbmFSGKPkYuAZ2/310sfATTKorDBhGAATMclWe9xranIRnRMBzyJKfXNt)
 
 redis:
-  hostName: redis
+  hostName: redis-svc
   port: 6379
   password: ENC(zcHHfT7A7W0CVu0Nrb7sDksp+75DUIVzawhXE26qFXNIwIcxw582mPrf9zJDwEE7)
 
